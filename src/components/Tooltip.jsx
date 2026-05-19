@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 export default function Tooltip({
-  text,
+  text = "",
   position = "top",
   children,
   style = {},
@@ -9,35 +9,17 @@ export default function Tooltip({
   const [visible, setVisible] = useState(false);
 
   const positions = {
-    top: {
-      bottom: "100%",
-      left: "50%",
-      transform: "translateX(-50%)",
-      marginBottom: "8px",
-    },
-    bottom: {
-      top: "100%",
-      left: "50%",
-      transform: "translateX(-50%)",
-      marginTop: "8px",
-    },
-    left: {
-      right: "100%",
-      top: "50%",
-      transform: "translateY(-50%)",
-      marginRight: "8px",
-    },
-    right: {
-      left: "100%",
-      top: "50%",
-      transform: "translateY(-50%)",
-      marginLeft: "8px",
-    },
+    top: { bottom: "100%", left: "50%", transform: "translateX(-50%)", marginBottom: 8 },
+    bottom: { top: "100%", left: "50%", transform: "translateX(-50%)", marginTop: 8 },
+    left: { right: "100%", top: "50%", transform: "translateY(-50%)", marginRight: 8 },
+    right: { left: "100%", top: "50%", transform: "translateY(-50%)", marginLeft: 8 },
   };
+
+  const pos = positions[position] || positions.top;
 
   return (
     <div
-      style={{ position: "relative", display: "inline-block" }}
+      style={{ position: "relative", display: "inline-block", ...style }}
       onMouseEnter={() => setVisible(true)}
       onMouseLeave={() => setVisible(false)}
     >
@@ -49,18 +31,17 @@ export default function Tooltip({
             position: "absolute",
             padding: "6px 10px",
             background: "rgba(0,0,0,0.85)",
-            border: "1px solid rgba(255,255,255,0.15)",
-            borderRadius: "6px",
+            borderRadius: 6,
+            border: "1px solid rgba(255,255,255,0.2)",
             color: "#fff",
-            fontSize: "12px",
+            fontSize: 12,
             whiteSpace: "nowrap",
             zIndex: 999,
             pointerEvents: "none",
             opacity: visible ? 1 : 0,
-            transition: "opacity 0.15s ease",
-            textShadow: "0 0 4px rgba(255, 46, 46, 0.4)",
-            ...positions[position],
-            ...style,
+            transition: "opacity 0.2s ease",
+            boxShadow: "0 0 8px rgba(255,255,255,0.4)",
+            ...pos,
           }}
         >
           {text}
