@@ -1,11 +1,10 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 
-// Placeholder pages (we will replace these in the next tasks)
-function LoginPage() {
-  return <h1>Login Page</h1>;
-}
+// Real pages
+import LoginPage from "./pages/LoginPage.jsx";
 
+// Placeholder pages (we will replace these next)
 function NotAuthorized() {
   return <h1>Not Authorized</h1>;
 }
