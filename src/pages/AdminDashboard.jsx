@@ -5,10 +5,8 @@ export default function AdminDashboard() {
 
   return (
     <div>
-      {/* Page Title */}
       <h2 style={{ marginBottom: "20px" }}>Admin Control Panel</h2>
 
-      {/* User Info Card */}
       <div className="card">
         <h3>Logged in as</h3>
         <p style={{ fontSize: "20px", marginBottom: "6px" }}>
@@ -19,7 +17,6 @@ export default function AdminDashboard() {
         </p>
       </div>
 
-      {/* Dashboard Stats */}
       <div className="dashboard-grid">
         <div className="card">
           <h3>Total Users</h3>
@@ -42,7 +39,6 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      {/* Admin Actions */}
       <div className="card">
         <h3>Admin Actions</h3>
 
@@ -54,9 +50,7 @@ export default function AdminDashboard() {
           View Logs
         </button>
 
-        <button className="btn">
-          System Settings
-        </button>
+        <button className="btn">System Settings</button>
       </div>
     </div>
   );

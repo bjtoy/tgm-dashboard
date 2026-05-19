@@ -4,28 +4,42 @@ export default function MemberHome() {
   const { user, roles } = useRoles();
 
   return (
-    <div style={{ textAlign: "center", marginTop: "60px" }}>
-      <h1 style={{ fontSize: "32px", marginBottom: "10px" }}>
-        Welcome, {user?.username || "Member"}
-      </h1>
+    <div>
+      <h2 style={{ marginBottom: "20px" }}>Member Dashboard</h2>
 
-      <p style={{ fontSize: "18px", marginBottom: "20px" }}>
-        You are logged in and ready to use the dashboard.
-      </p>
+      <div className="card">
+        <h3>Welcome</h3>
+        <p style={{ fontSize: "20px", marginBottom: "6px" }}>
+          {user?.username || "Member"}
+        </p>
+        <p style={{ color: "var(--text-muted)" }}>
+          Roles: {roles?.length ? roles.join(", ") : "None"}
+        </p>
+      </div>
 
-      <div
-        style={{
-          display: "inline-block",
-          padding: "16px 24px",
-          background: "#1e1e1e",
-          color: "white",
-          borderRadius: "10px",
-          fontSize: "16px",
-        }}
-      >
-        <strong>Your Roles:</strong>
-        <br />
-        {roles.length > 0 ? roles.join(", ") : "No roles assigned"}
+      <div className="dashboard-grid">
+        <div className="card">
+          <h3>Your Rank</h3>
+          <div className="value">—</div>
+        </div>
+
+        <div className="card">
+          <h3>Faction</h3>
+          <div className="value">—</div>
+        </div>
+
+        <div className="card">
+          <h3>Daily Tasks</h3>
+          <div className="value">—</div>
+        </div>
+      </div>
+
+      <div className="card">
+        <h3>Quick Actions</h3>
+        <button className="btn" style={{ marginRight: "12px" }}>
+          View Profile
+        </button>
+        <button className="btn">Check Messages</button>
       </div>
     </div>
   );
