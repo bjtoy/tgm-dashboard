@@ -1,23 +1,39 @@
 export default function Loader() {
   return (
-    <div style={{ textAlign: "center", padding: "20px" }}>
+    <div
+      style={{
+        textAlign: "center",
+        padding: "30px 0",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+      }}
+    >
+      {/* Neon Spinner */}
       <div
         style={{
-          width: "40px",
-          height: "40px",
-          border: "4px solid rgba(255, 46, 46, 0.2)",
+          width: "48px",
+          height: "48px",
+          border: "4px solid rgba(255, 46, 46, 0.15)",
           borderTopColor: "var(--red-neon)",
           borderRadius: "50%",
-          margin: "0 auto",
-          animation: "spin 0.8s linear infinite",
+          animation: "spin 0.9s linear infinite",
+          boxShadow: "0 0 12px rgba(255, 46, 46, 0.6)",
         }}
       ></div>
 
-      <p style={{ marginTop: "10px", color: "var(--text-muted)" }}>
-        Loading...
+      <p
+        style={{
+          marginTop: "14px",
+          color: "var(--text-muted)",
+          fontSize: "15px",
+          letterSpacing: "0.5px",
+        }}
+      >
+        Loading…
       </p>
 
-      {/* Spinner animation */}
+      {/* Spinner Animation */}
       <style>
         {`
           @keyframes spin {
