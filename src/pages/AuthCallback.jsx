@@ -1,25 +1,51 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useRoles } from "../context/RoleContext.jsx";
 
 export default function AuthCallback() {
   const navigate = useNavigate();
+  const { refreshUser } = useRoles();
 
   useEffect(() => {
-    // Extract token from URL
-    const params = new URLSearchParams(window.location.search);
-    const token = params.get("token");
+    async function processLogin() {
+      const params = new URLSearchParams(window.location.search);
+      const code = params.get("code");
 
-    if (token) {
-      // Store token
-      localStorage.setItem("authToken", token);
+      if (!code) {
+        // No OAuth code → redirect to login
+        navigate("/login", { replace: true });
+        return;
+      }
 
-      // Redirect to dashboard
-      navigate("/", { replace: true });
-    } else {
-      // No token found → redirect to login
-      navigate("/login", { replace: true });
+      try {
+        // Exchange code for session cookie
+        const res = await fetch("/api/auth/callback", {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ code }),
+        });
+
+        if (!res.ok) {
+          navigate("/login", { replace: true });
+          return;
+        }
+
+        // Refresh user data from backend
+        await refreshUser();
+
+        // Redirect to dashboard
+        navigate("/", { replace: true });
+      } catch (err) {
+        console.error("OAuth callback error:", err);
+        navigate("/login", { replace: true });
+      }
     }
-  }, [navigate]);
+
+    processLogin();
+  }, [navigate, refreshUser]);
 
   return (
     <div
