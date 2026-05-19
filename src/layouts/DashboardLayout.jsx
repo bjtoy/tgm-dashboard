@@ -7,8 +7,16 @@ export default function DashboardLayout({ children }) {
 
   if (loading) {
     return (
-      <div className="loading-screen">
-        <h2>Loading your dashboard…</h2>
+      <div
+        className="loading-screen"
+        style={{
+          textAlign: "center",
+          marginTop: "120px",
+          fontSize: "28px",
+          color: "var(--text-muted)",
+        }}
+      >
+        Loading your dashboard…
       </div>
     );
   }
@@ -17,25 +25,80 @@ export default function DashboardLayout({ children }) {
   const isAdmin = roles.includes("Admin");
 
   return (
-    <>
-      {/* HEADER */}
-      <header className="header">
-        <div className="header-left">
-          <h1 className="header-title">TGM BOT CONTROL PANEL</h1>
-          <h2 className="header-subtitle">Dashboard</h2>
-          <p className="welcome-text">
-            Welcome back, <strong>{user?.username || "Member"}</strong>
+    <div className="dashboard-wrapper">
+      {/* ===========================
+          TOPBAR
+      ============================ */}
+      <header
+        className="topbar"
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          padding: "16px 28px",
+          background: "var(--bg-dark)",
+          borderBottom: "1px solid rgba(255, 46, 46, 0.2)",
+          boxShadow: "0 0 12px rgba(255, 46, 46, 0.25)",
+          position: "sticky",
+          top: 0,
+          zIndex: 20,
+        }}
+      >
+        {/* Left: Title */}
+        <div>
+          <h1
+            className="header-title"
+            style={{
+              fontSize: "26px",
+              marginBottom: "4px",
+              textShadow: "0 0 10px rgba(255, 46, 46, 0.6)",
+            }}
+          >
+            TGM BOT CONTROL PANEL
+          </h1>
+          <p
+            className="header-subtitle"
+            style={{
+              fontSize: "14px",
+              color: "var(--text-muted)",
+            }}
+          >
+            Welcome back, <strong>{user?.username}</strong>
           </p>
         </div>
 
-        {/* HERO MASCOT */}
+        {/* Right: Mascot */}
         <div className="header-art">
-          <img src={mascot} alt="Mascot" className="mascot-img" />
+          <img
+            src={mascot}
+            alt="Mascot"
+            className="mascot-img"
+            style={{
+              height: "58px",
+              filter: "drop-shadow(0 0 8px rgba(255, 46, 46, 0.6))",
+            }}
+          />
         </div>
       </header>
 
-      {/* SIDEBAR */}
-      <nav className="sidebar">
+      {/* ===========================
+          SIDEBAR
+      ============================ */}
+      <nav
+        className="sidebar"
+        style={{
+          width: "240px",
+          background: "var(--bg-darker)",
+          borderRight: "1px solid rgba(255, 46, 46, 0.15)",
+          padding: "24px 0",
+          position: "fixed",
+          top: "0",
+          bottom: "0",
+          marginTop: "90px",
+          overflowY: "auto",
+        }}
+      >
+        {/* Home */}
         <NavLink
           to="/"
           className={({ isActive }) =>
@@ -45,7 +108,7 @@ export default function DashboardLayout({ children }) {
           Home
         </NavLink>
 
-        {/* Guides (everyone) */}
+        {/* Guides */}
         <NavLink
           to="/guides"
           className={({ isActive }) =>
@@ -55,7 +118,7 @@ export default function DashboardLayout({ children }) {
           Guides
         </NavLink>
 
-        {/* Create Guide (Mods + Admins) */}
+        {/* Create Guide */}
         {isMod && (
           <NavLink
             to="/guides/create"
@@ -159,13 +222,31 @@ export default function DashboardLayout({ children }) {
         )}
 
         {/* Logout */}
-        <button className="btn logout-btn" onClick={logout}>
+        <button
+          className="btn logout-btn"
+          onClick={logout}
+          style={{
+            marginTop: "30px",
+            width: "80%",
+            marginLeft: "10%",
+          }}
+        >
           Logout
         </button>
       </nav>
 
-      {/* MAIN CONTENT */}
-      <main className="app-container">{children}</main>
-    </>
+      {/* ===========================
+          MAIN CONTENT
+      ============================ */}
+      <main
+        className="app-container"
+        style={{
+          marginLeft: "240px",
+          padding: "30px",
+        }}
+      >
+        {children}
+      </main>
+    </div>
   );
 }
