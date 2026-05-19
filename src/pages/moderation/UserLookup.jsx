@@ -25,8 +25,9 @@ export default function UserLookup() {
     };
 
     if (type === "warn") res = await api.bot.mod.warn(payload);
+    if (type === "promote") res = await api.bot.mod.promote(payload);
+    if (type === "demote") res = await api.bot.mod.demote(payload);
     if (type === "kick") res = await api.bot.mod.kick(payload);
-    if (type === "ban") res = await api.bot.mod.ban(payload);
 
     if (!res || res.error) {
       setActionMessage(res?.error || "Action failed");
@@ -65,7 +66,7 @@ export default function UserLookup() {
       </div>
 
       {/* ACTION BUTTONS */}
-      <div className="flex gap-3 mb-4">
+      <div className="flex flex-wrap gap-3 mb-4">
         <button
           onClick={() => handleAction("warn")}
           disabled={loadingAction}
@@ -75,19 +76,27 @@ export default function UserLookup() {
         </button>
 
         <button
+          onClick={() => handleAction("promote")}
+          disabled={loadingAction}
+          className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white"
+        >
+          Promote
+        </button>
+
+        <button
+          onClick={() => handleAction("demote")}
+          disabled={loadingAction}
+          className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white"
+        >
+          Demote
+        </button>
+
+        <button
           onClick={() => handleAction("kick")}
           disabled={loadingAction}
           className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white"
         >
           Kick
-        </button>
-
-        <button
-          onClick={() => handleAction("ban")}
-          disabled={loadingAction}
-          className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white"
-        >
-          Ban
         </button>
       </div>
 
