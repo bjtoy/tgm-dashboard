@@ -1,5 +1,6 @@
 import { NavLink } from "react-router-dom";
 import { useRoles } from "../context/RoleContext.jsx";
+import mascot from "../assets/images/redthornelogo1.png";
 
 export default function DashboardLayout({ children }) {
   const { user, roles, loading, logout } = useRoles();
@@ -17,27 +18,23 @@ export default function DashboardLayout({ children }) {
 
   return (
     <>
-      {/* Header */}
+      {/* HEADER */}
       <header className="header">
         <div className="header-left">
-          <h1 className="header-title">The Grand Mafia</h1>
+          <h1 className="header-title">TGM BOT CONTROL PANEL</h1>
           <h2 className="header-subtitle">Dashboard</h2>
-        </div>
-
-        <div className="header-center">
           <p className="welcome-text">
             Welcome back, <strong>{user?.username || "Member"}</strong>
           </p>
         </div>
 
-        <div className="header-right">
-          <button className="btn logout-btn" onClick={logout}>
-            Logout
-          </button>
+        {/* HERO MASCOT */}
+        <div className="header-art">
+          <img src={mascot} alt="Mascot" className="mascot-img" />
         </div>
       </header>
 
-      {/* Sidebar Navigation */}
+      {/* SIDEBAR */}
       <nav className="sidebar">
         <NavLink
           to="/"
@@ -48,7 +45,7 @@ export default function DashboardLayout({ children }) {
           Home
         </NavLink>
 
-        {/* Guides (everyone can view) */}
+        {/* Guides (everyone) */}
         <NavLink
           to="/guides"
           className={({ isActive }) =>
@@ -70,7 +67,7 @@ export default function DashboardLayout({ children }) {
           </NavLink>
         )}
 
-        {/* Drafts (Mods + Admins) */}
+        {/* Drafts */}
         {isMod && (
           <NavLink
             to="/guides/drafts"
@@ -82,7 +79,7 @@ export default function DashboardLayout({ children }) {
           </NavLink>
         )}
 
-        {/* Publish Guide (Mods + Admins) */}
+        {/* Publish Guide */}
         {isMod && (
           <NavLink
             to="/guides/publish"
@@ -96,17 +93,20 @@ export default function DashboardLayout({ children }) {
 
         {/* Moderator Tools */}
         {isMod && (
-          <NavLink
-            to="/moderator"
-            className={({ isActive }) =>
-              isActive ? "nav-item active" : "nav-item"
-            }
-          >
-            Moderator Tools
-          </NavLink>
+          <>
+            <div className="sidebar-section-label">Moderator</div>
+            <NavLink
+              to="/moderator"
+              className={({ isActive }) =>
+                isActive ? "nav-item active" : "nav-item"
+              }
+            >
+              Moderation Tools
+            </NavLink>
+          </>
         )}
 
-        {/* Admin Section */}
+        {/* Admin Tools */}
         {isAdmin && (
           <>
             <div className="sidebar-section-label">Admin</div>
@@ -157,9 +157,14 @@ export default function DashboardLayout({ children }) {
             </NavLink>
           </>
         )}
+
+        {/* Logout */}
+        <button className="btn logout-btn" onClick={logout}>
+          Logout
+        </button>
       </nav>
 
-      {/* Main Content */}
+      {/* MAIN CONTENT */}
       <main className="app-container">{children}</main>
     </>
   );
