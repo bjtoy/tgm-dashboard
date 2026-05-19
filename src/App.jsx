@@ -3,12 +3,9 @@ import ProtectedRoute from "./components/ProtectedRoute.jsx";
 
 // Real pages
 import LoginPage from "./pages/LoginPage.jsx";
+import NotAuthorized from "./pages/NotAuthorized.jsx";
 
-// Placeholder pages (we will replace these next)
-function NotAuthorized() {
-  return <h1>Not Authorized</h1>;
-}
-
+// Placeholder pages (these will be replaced next)
 function MemberHome() {
   return <h1>Member Home</h1>;
 }
