@@ -10,8 +10,10 @@ export default function ModDashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Load moderator stats
   useEffect(() => {
-    api.get("/mod/stats", ["Admin", "Moderator"])
+    api
+      .get("/mod/stats")
       .then((data) => setStats(data))
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
@@ -19,23 +21,51 @@ export default function ModDashboard() {
 
   return (
     <div>
-      <h2 style={{ marginBottom: "20px" }}>Moderator Dashboard</h2>
+      <h1
+        className="header-title"
+        style={{
+          marginBottom: "20px",
+          fontSize: "38px",
+          textShadow: "0 0 10px rgba(255, 46, 46, 0.6)",
+        }}
+      >
+        Moderator Dashboard
+      </h1>
 
       {loading && <Loader />}
       {error && <ErrorCard message={error} />}
 
       {!loading && !error && (
         <>
-          <div className="card">
-            <h3>Moderator</h3>
+          {/* PROFILE CARD */}
+          <div
+            className="card"
+            style={{
+              marginBottom: "30px",
+              padding: "24px",
+            }}
+          >
+            <h2
+              style={{
+                marginBottom: "10px",
+                fontSize: "26px",
+                color: "var(--red-neon)",
+                textShadow: "0 0 8px rgba(255, 46, 46, 0.6)",
+              }}
+            >
+              Moderator
+            </h2>
+
             <p style={{ fontSize: "20px", marginBottom: "6px" }}>
               {user?.username}
             </p>
+
             <p style={{ color: "var(--text-muted)" }}>
               Roles: {roles?.join(", ")}
             </p>
           </div>
 
+          {/* STATS GRID */}
           <div className="dashboard-grid">
             <div className="card">
               <h3>Reports Today</h3>
