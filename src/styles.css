@@ -1,0 +1,132 @@
+/* =========================
+   Font Imports
+========================= */
+
+/* Goldrops (Heading Font) */
+@font-face {
+  font-family: 'Goldrops';
+  src: url('./assets/fonts/GoldropspersonaluseRegular.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* Caudex (UI Font Family) */
+@font-face {
+  font-family: 'Caudex';
+  src: url('./assets/fonts/Caudex-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Caudex';
+  src: url('./assets/fonts/Caudex-Italic.ttf') format('truetype');
+  font-weight: 400;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Caudex';
+  src: url('./assets/fonts/Caudex-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Caudex';
+  src: url('./assets/fonts/Caudex-BoldItalic.ttf') format('truetype');
+  font-weight: 700;
+  font-style: italic;
+}
+
+/* =========================
+   Grand Mafia Design System
+========================= */
+:root {
+  --bg-main: #050308;
+  --bg-card: #110326;
+  --bg-elevated: #241338;
+
+  /* Replaced violet/magenta with deep + neon red */
+  --red-deep: #4a0a0a;
+  --red-neon: #ff2e2e;
+
+  --text-main: #f4eeff;
+  --text-muted: #b9a8d6;
+
+  --border: #2a1b44;
+}
+
+/* =========================
+   Global Reset
+========================= */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  font-family: 'Caudex', serif;
+  min-height: 100vh;
+}
+
+/* =========================
+   Header
+========================= */
+header {
+  padding: 24px 32px;
+  border-bottom: 1px solid var(--border);
+}
+
+.header-title {
+  font-family: 'Goldrops', serif;
+  font-size: 60px;
+  letter-spacing: 2px;
+  color: var(--red-neon);
+  text-shadow:
+    0 0 12px rgba(255,46,46,1),
+    0 0 30px rgba(255,46,46,0.6);
+}
+
+.header-subtitle {
+  font-family: 'Goldrops', serif;
+  font-size: 38px;
+  letter-spacing: 1px;
+  color: var(--red-neon);
+  text-shadow:
+    0 0 10px rgba(255,46,46,0.9),
+    0 0 25px rgba(255,46,46,0.5);
+}
+
+header p {
+  margin-top: 6px;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+/* =========================
+   Navigation
+========================= */
+.nav {
+  display: flex;
+  gap: 16px;
+  margin-top: 18px;
+  flex-wrap: wrap;
+}
+
+.nav-item {
+  color: var(--text-muted);
+  text-decoration: none;
+  padding: 8px 16px;
+  border-radius: 10px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.nav-item:hover {
+  background: var(--bg-elevated);
+  color: var(--
