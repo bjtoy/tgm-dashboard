@@ -9,38 +9,18 @@ export function RoleProvider({ children }) {
   const [permissions, setPermissions] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Load user from backend using stored token
+  // ================================
+  // LOAD USER FROM BACKEND SESSION
+  // ================================
   async function loadUser() {
-    const token = localStorage.getItem("authToken");
-
-    if (!token) {
-      setUser(null);
-      setRoles([]);
-      setPermissions([]);
-      setLoading(false);
-      return;
-    }
-
     try {
       const res = await fetch("/api/auth/me", {
         method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        credentials: "include", // IMPORTANT: use session cookies
       });
 
       if (res.status === 401) {
-        // Token invalid or expired
-        localStorage.removeItem("authToken");
-        setUser(null);
-        setRoles([]);
-        setPermissions([]);
-        setLoading(false);
-        return;
-      }
-
-      if (res.status === 403) {
-        // User exists but has no permission
+        // Not logged in
         setUser(null);
         setRoles([]);
         setPermissions([]);
@@ -67,12 +47,14 @@ export function RoleProvider({ children }) {
     }
   }
 
-  // Load user on first mount
+  // Load user on mount
   useEffect(() => {
     loadUser();
   }, []);
 
-  // Helpers
+  // ================================
+  // HELPERS
+  // ================================
   function hasRole(roleName) {
     return roles.includes(roleName);
   }
@@ -85,15 +67,26 @@ export function RoleProvider({ children }) {
     return permissions.includes(permissionName);
   }
 
-  function logout() {
-    localStorage.removeItem("authToken");
+  // ================================
+  // LOGOUT (SESSION-BASED)
+  // ================================
+  async function logout() {
+    try {
+      await fetch("/api/auth/logout", {
+        method: "POST",
+        credentials: "include",
+      });
+    } catch (err) {
+      console.error("Logout error:", err);
+    }
+
     setUser(null);
     setRoles([]);
     setPermissions([]);
     window.location.href = "/login";
   }
 
-  // Register handlers with the API helper
+  // Register handlers with API helper
   registerAuthHandlers({
     logout,
     refreshUser: loadUser,
