@@ -1,9 +1,10 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useRoles } from "../context/RoleContext.jsx";
 import mascot from "../assets/images/redthornelogo1.png";
 
 export default function DashboardLayout({ children }) {
   const { user, roles, loading, logout } = useRoles();
+  const navigate = useNavigate();
 
   if (loading) {
     return (
@@ -23,6 +24,11 @@ export default function DashboardLayout({ children }) {
 
   const isMod = roles.includes("Moderator") || roles.includes("Admin");
   const isAdmin = roles.includes("Admin");
+
+  const changeServer = () => {
+    localStorage.removeItem("guildId");
+    navigate("/select-guild");
+  };
 
   return (
     <div className="dashboard-wrapper">
@@ -220,6 +226,22 @@ export default function DashboardLayout({ children }) {
             </NavLink>
           </>
         )}
+
+        {/* ===========================
+            CHANGE SERVER BUTTON
+        ============================ */}
+        <button
+          className="btn"
+          onClick={changeServer}
+          style={{
+            marginTop: "20px",
+            width: "80%",
+            marginLeft: "10%",
+            background: "var(--accent)",
+          }}
+        >
+          Change Server
+        </button>
 
         {/* Logout */}
         <button
