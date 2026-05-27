@@ -5,19 +5,30 @@ import Loader from "../components/Loader.jsx";
 import ErrorCard from "../components/ErrorCard.jsx";
 
 export default function MemberHome() {
-  const { user } = useRoles();
+  const { user, guildId } = useRoles();
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Load member profile from backend
+  // Load member profile from backend (guild-aware)
   useEffect(() => {
+    if (!guildId) return;
+
+    setLoading(true);
+    setError(null);
+
     api
       .get("/member/profile")
-      .then((data) => setProfile(data))
+      .then((data) => {
+        if (!data || data.error) {
+          setError(data?.error || "Failed to load profile");
+          return;
+        }
+        setProfile(data);
+      })
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
-  }, []);
+  }, [guildId]);
 
   return (
     <div>
