@@ -122,4 +122,62 @@ export const api = {
       warnings: (userId) => request("GET", `/bot/mod/warnings/${userId}`),
 
       warn: (data) => request("POST", "/bot/mod/warn", data),
+      kick: (data) => request("POST", "/bot/mod/kick", data),
+      ban: (data) => request("POST", "/bot/mod/ban", data),
+    },
+
+    // ============================
+    // BOT → ADMIN
+    // ============================
+    admin: {
+      status: () => request("GET", "/bot/admin/status"),
+      guildInfo: () => request("GET", "/bot/admin/guild-info"),
+
+      reloadConfig: () => request("POST", "/bot/admin/reload-config"),
+      syncRoles: () => request("POST", "/bot/admin/sync-roles"),
+    },
+
+    // ============================
+    // BOT → LOGS
+    // ============================
+    logs: {
+      recent: () => request("GET", "/bot/logs/recent"),
+      cases: () => request("GET", "/bot/logs/cases"),
+    },
+  },
+};
+========
+// PUBLIC API WRAPPER
+// =======================================
+export const api = {
+  get: (endpoint) => request("GET", endpoint),
+  post: (endpoint, body) => request("POST", endpoint, body),
+  put: (endpoint, body) => request("PUT", endpoint, body),
+  delete: (endpoint) => request("DELETE", endpoint),
+
+  // ============================
+  // AUTH
+  // ============================
+  auth: {
+    me: () => request("GET", "/api/auth/me"),
+    logout: () => request("POST", "/api/auth/logout"),
+  },
+
+  // ============================
+  // GUILDS
+  // ============================
+  guilds: {
+    list: () => request("GET", "/api/guilds"),
+  },
+
+  // ============================
+  // BOT → MODERATION
+  // ============================
+  bot: {
+    mod: {
+      overview: () => request("GET", "/bot/mod/overview"),
+      activeCases: () => request("GET", "/bot/mod/active-cases"),
+      warnings: (userId) => request("GET", `/bot/mod/warnings/${userId}`),
+
+      warn: (data) => request("POST", "/bot/mod/warn", data),
       kick: (data) => request("POST",

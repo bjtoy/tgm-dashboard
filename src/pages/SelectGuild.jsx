@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { api } from "../api/api.js";
 
 function SelectGuild() {
   const navigate = useNavigate();
@@ -14,16 +15,9 @@ function SelectGuild() {
   useEffect(() => {
     const fetchGuilds = async () => {
       try {
-        const res = await fetch(
-          `${import.meta.env.VITE_API_URL}/api/guilds`,
-          {
-            credentials: "include"
-          }
-        );
+        const data = await api.guilds.list();
 
-        const data = await res.json();
-
-        if (!data.success) {
+        if (!data?.success) {
           setError("Failed to load guilds.");
           setLoading(false);
           return;

@@ -122,4 +122,27 @@ export const api = {
       warnings: (userId) => request("GET", `/bot/mod/warnings/${userId}`),
 
       warn: (data) => request("POST", "/bot/mod/warn", data),
-      kick: (data) => request("POST",
+      kick: (data) => request("POST", "/bot/mod/kick", data),
+      ban: (data) => request("POST", "/bot/mod/ban", data),
+    },
+
+    // ============================
+    // BOT → ADMIN
+    // ============================
+    admin: {
+      status: () => request("GET", "/bot/admin/status"),
+      guildInfo: () => request("GET", "/bot/admin/guild-info"),
+
+      reloadConfig: () => request("POST", "/bot/admin/reload-config"),
+      syncRoles: () => request("POST", "/bot/admin/sync-roles"),
+    },
+
+    // ============================
+    // BOT → LOGS
+    // ============================
+    logs: {
+      recent: () => request("GET", "/bot/logs/recent"),
+      cases: () => request("GET", "/bot/logs/cases"),
+    },
+  },
+};
