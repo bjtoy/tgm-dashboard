@@ -28,7 +28,7 @@ const API_BASE = import.meta.env.VITE_API_URL;
 async function request(method, endpoint, body = null) {
   const options = {
     method,
-    credentials: "include", // CRITICAL: sends session cookies
+    credentials: "include",
     headers: {
       "Content-Type": "application/json",
     },
@@ -47,11 +47,8 @@ async function request(method, endpoint, body = null) {
     throw err;
   }
 
-  // ============================
-  // AUTH HANDLING
-  // ============================
   if (res.status === 401) {
-    if (logoutFn) logoutFn(); // session expired
+    if (logoutFn) logoutFn();
     return;
   }
 
@@ -60,9 +57,6 @@ async function request(method, endpoint, body = null) {
     return;
   }
 
-  // ============================
-  // PARSE JSON SAFELY
-  // ============================
   let data = null;
   try {
     data = await res.json();
@@ -70,17 +64,11 @@ async function request(method, endpoint, body = null) {
     data = null;
   }
 
-  // ============================
-  // ERROR HANDLING
-  // ============================
   if (!res.ok) {
     toastError(data?.error || "API request failed");
     throw new Error(data?.error || "API request failed");
   }
 
-  // ============================
-  // OPTIONAL: REFRESH USER AFTER WRITE
-  // ============================
   if (["POST", "PUT", "DELETE"].includes(method) && refreshUserFn) {
     refreshUserFn();
   }
@@ -97,24 +85,15 @@ export const api = {
   put: (endpoint, body) => request("PUT", endpoint, body),
   delete: (endpoint) => request("DELETE", endpoint),
 
-  // ============================
-  // AUTH
-  // ============================
   auth: {
     me: () => request("GET", "/api/auth/me"),
     logout: () => request("POST", "/api/auth/logout"),
   },
 
-  // ============================
-  // GUILDS
-  // ============================
   guilds: {
     list: () => request("GET", "/api/guilds"),
   },
 
-  // ============================
-  // BOT → MODERATION
-  // ============================
   bot: {
     mod: {
       overview: () => request("GET", "/bot/mod/overview"),
@@ -126,9 +105,6 @@ export const api = {
       ban: (data) => request("POST", "/bot/mod/ban", data),
     },
 
-    // ============================
-    // BOT → ADMIN
-    // ============================
     admin: {
       status: () => request("GET", "/bot/admin/status"),
       guildInfo: () => request("GET", "/bot/admin/guild-info"),
@@ -137,9 +113,6 @@ export const api = {
       syncRoles: () => request("POST", "/bot/admin/sync-roles"),
     },
 
-    // ============================
-    // BOT → LOGS
-    // ============================
     logs: {
       recent: () => request("GET", "/bot/logs/recent"),
       cases: () => request("GET", "/bot/logs/cases"),

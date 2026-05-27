@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { registerAuthHandlers } from "../utils/api.js";
+import { registerAuthHandlers } from "../api/api.js";
 
 const RoleContext = createContext();
 
