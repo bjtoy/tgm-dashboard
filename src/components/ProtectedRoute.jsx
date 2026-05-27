@@ -8,6 +8,8 @@ export default function ProtectedRoute({
 }) {
   const { user, loading, hasAnyRole, hasPermission } = useRoles();
 
+  const guildId = localStorage.getItem("guildId");
+
   // Still loading user data
   if (loading) {
     return <div>Loading...</div>;
@@ -16,6 +18,11 @@ export default function ProtectedRoute({
   // Not logged in → redirect to login
   if (!user) {
     return <Navigate to="/login" replace />;
+  }
+
+  // No guild selected → redirect to guild selector
+  if (!guildId) {
+    return <Navigate to="/select-guild" replace />;
   }
 
   // Role-based protection
