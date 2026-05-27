@@ -10,6 +10,7 @@ import MemberHome from "./pages/MemberHome.jsx";
 import ModDashboard from "./pages/ModDashboard.jsx";
 import AdminDashboard from "./pages/AdminDashboard.jsx";
 import AuthCallback from "./pages/AuthCallback.jsx";
+import SelectGuild from "./pages/SelectGuild.jsx"; // ⭐ NEW
 
 function App() {
   return (
@@ -29,6 +30,16 @@ function App() {
         {/* ================================
             PROTECTED ROUTES (SESSION REQUIRED)
         ================================= */}
+
+        {/* Select Guild Page */}
+        <Route
+          path="/select-guild"
+          element={
+            <ProtectedRoute>
+              <SelectGuild />
+            </ProtectedRoute>
+          }
+        />
 
         {/* Member Home */}
         <Route
