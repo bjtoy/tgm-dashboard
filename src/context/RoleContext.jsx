@@ -3,6 +3,8 @@ import { registerAuthHandlers } from "../utils/api.js";
 
 const RoleContext = createContext();
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 export function RoleProvider({ children }) {
   const [user, setUser] = useState(null);
   const [roles, setRoles] = useState([]);
@@ -14,13 +16,12 @@ export function RoleProvider({ children }) {
   // ================================
   async function loadUser() {
     try {
-      const res = await fetch("/api/auth/me", {
+      const res = await fetch(`${API_URL}/api/auth/me`, {
         method: "GET",
-        credentials: "include", // IMPORTANT: use session cookies
+        credentials: "include",
       });
 
       if (res.status === 401) {
-        // Not logged in
         setUser(null);
         setRoles([]);
         setPermissions([]);
@@ -39,6 +40,7 @@ export function RoleProvider({ children }) {
       setPermissions(data.permissions || []);
     } catch (err) {
       console.error("Failed to load user:", err);
+
       setUser(null);
       setRoles([]);
       setPermissions([]);
@@ -68,11 +70,11 @@ export function RoleProvider({ children }) {
   }
 
   // ================================
-  // LOGOUT (SESSION-BASED)
+  // LOGOUT
   // ================================
   async function logout() {
     try {
-      await fetch("/api/auth/logout", {
+      await fetch(`${API_URL}/api/auth/logout`, {
         method: "POST",
         credentials: "include",
       });
@@ -86,7 +88,6 @@ export function RoleProvider({ children }) {
     window.location.href = "/login";
   }
 
-  // Register handlers with API helper
   registerAuthHandlers({
     logout,
     refreshUser: loadUser,
