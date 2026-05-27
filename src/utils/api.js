@@ -3,7 +3,7 @@
 // Works with Render backend + Vercel frontend
 // =======================================
 
-import { toastError } from "./toastHelper.js";
+import { toastError } from "../utils/toastHelper.js";
 
 let logoutFn = null;
 let refreshUserFn = null;
@@ -146,38 +146,3 @@ export const api = {
     },
   },
 };
-========
-// PUBLIC API WRAPPER
-// =======================================
-export const api = {
-  get: (endpoint) => request("GET", endpoint),
-  post: (endpoint, body) => request("POST", endpoint, body),
-  put: (endpoint, body) => request("PUT", endpoint, body),
-  delete: (endpoint) => request("DELETE", endpoint),
-
-  // ============================
-  // AUTH
-  // ============================
-  auth: {
-    me: () => request("GET", "/api/auth/me"),
-    logout: () => request("POST", "/api/auth/logout"),
-  },
-
-  // ============================
-  // GUILDS
-  // ============================
-  guilds: {
-    list: () => request("GET", "/api/guilds"),
-  },
-
-  // ============================
-  // BOT → MODERATION
-  // ============================
-  bot: {
-    mod: {
-      overview: () => request("GET", "/bot/mod/overview"),
-      activeCases: () => request("GET", "/bot/mod/active-cases"),
-      warnings: (userId) => request("GET", `/bot/mod/warnings/${userId}`),
-
-      warn: (data) => request("POST", "/bot/mod/warn", data),
-      kick: (data) => request("POST",
