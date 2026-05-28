@@ -1,4 +1,10 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+
 import { registerAuthHandlers } from "../api/api.js";
 
 const RoleContext = createContext();
@@ -11,9 +17,6 @@ export function RoleProvider({ children }) {
   const [permissions, setPermissions] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // ================================
-  // GUILD CONTEXT
-  // ================================
   const [guildId, setGuildId] = useState(() => {
     try {
       return localStorage.getItem("guildId") || null;
@@ -22,7 +25,6 @@ export function RoleProvider({ children }) {
     }
   });
 
-  // Keep localStorage in sync when guildId changes
   useEffect(() => {
     try {
       if (guildId) {
@@ -31,13 +33,10 @@ export function RoleProvider({ children }) {
         localStorage.removeItem("guildId");
       }
     } catch {
-      /* ignore storage errors */
+      console.error("Failed to sync guildId");
     }
   }, [guildId]);
 
-  // ================================
-  // LOAD USER FROM BACKEND SESSION
-  // ================================
   async function loadUser() {
     try {
       const res = await fetch(`${API_URL}/api/auth/me`, {
@@ -60,8 +59,18 @@ export function RoleProvider({ children }) {
       const data = await res.json();
 
       setUser(data?.user || null);
-      setRoles(Array.isArray(data?.roles) ? data.roles : []);
-      setPermissions(Array.isArray(data?.permissions) ? data.permissions : []);
+
+      setRoles(
+        Array.isArray(data?.roles)
+          ? data.roles
+          : []
+      );
+
+      setPermissions(
+        Array.isArray(data?.permissions)
+          ? data.permissions
+          : []
+      );
     } catch (err) {
       console.error("Failed to load user:", err);
 
@@ -73,29 +82,10 @@ export function RoleProvider({ children }) {
     }
   }
 
-  // Load user on mount
   useEffect(() => {
     loadUser();
   }, []);
 
-  // ================================
-  // HELPERS
-  // ================================
-  function hasRole(roleName) {
-    return roles.includes(roleName);
-  }
-
-  function hasAnyRole(roleList) {
-    return Array.isArray(roleList) && roleList.some((r) => roles.includes(r));
-  }
-
-  function hasPermission(permissionName) {
-    return permissions.includes(permissionName);
-  }
-
-  // ================================
-  // LOGOUT
-  // ================================
   async function logout() {
     try {
       await fetch(`${API_URL}/api/auth/logout`, {
@@ -118,10 +108,12 @@ export function RoleProvider({ children }) {
     window.location.href = "/login";
   }
 
-  registerAuthHandlers({
-    logout,
-    refreshUser: loadUser,
-  });
+  useEffect(() => {
+    registerAuthHandlers({
+      logout,
+      refreshUser: loadUser,
+    });
+  }, []);
 
   const value = {
     user,
@@ -130,9 +122,12 @@ export function RoleProvider({ children }) {
     guildId,
     setGuildId,
     loading,
-    hasRole,
-    hasAnyRole,
-    hasPermission,
+    hasRole: (roleName) => roles.includes(roleName),
+    hasAnyRole: (roleList) =>
+      Array.isArray(roleList) &&
+      roleList.some((r) => roles.includes(r)),
+    hasPermission: (permissionName) =>
+      permissions.includes(permissionName),
     refreshUser: loadUser,
     logout,
   };

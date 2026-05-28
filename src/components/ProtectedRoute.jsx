@@ -16,37 +16,18 @@ export default function ProtectedRoute({
 
   const location = useLocation();
 
-  // ========================================
-  // STILL LOADING
-  // ========================================
   if (loading) {
     return (
-      <div
-        style={{
-          color: "white",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100vh",
-          fontSize: "24px",
-        }}
-      >
+      <div className="loading-screen">
         Loading...
       </div>
     );
   }
 
-  // ========================================
-  // NOT LOGGED IN
-  // ========================================
   if (!user) {
     return <Navigate to="/login" replace />;
   }
 
-  // ========================================
-  // ALLOW ACCESS TO GUILD SELECTOR
-  // WITHOUT guildId
-  // ========================================
   if (
     !guildId &&
     location.pathname !== "/select-guild"
@@ -54,25 +35,16 @@ export default function ProtectedRoute({
     return <Navigate to="/select-guild" replace />;
   }
 
-  // ========================================
-  // ROLE CHECK
-  // ========================================
   if (roles && !hasAnyRole(roles)) {
     return <Navigate to="/not-authorized" replace />;
   }
 
-  // ========================================
-  // PERMISSION CHECK
-  // ========================================
   if (
     permissions &&
-    !permissions.every((p) => hasPermission(p))
+    !permissions.some((p) => hasPermission(p))
   ) {
     return <Navigate to="/not-authorized" replace />;
   }
 
-  // ========================================
-  // ALLOWED
-  // ========================================
   return children;
 }
