@@ -18,7 +18,7 @@ export function registerAuthHandlers({ logout, refreshUser }) {
 // CORRECT BASE URL
 // Must point to Render backend
 // =======================================
-const API_BASE = import.meta.env.VITE_API_URL; 
+const API_BASE = import.meta.env.VITE_API_URL;
 // Example: https://tgm-backend-v5bp.onrender.com
 
 // =======================================
@@ -65,8 +65,9 @@ async function request(method, endpoint, body = null) {
   }
 
   if (!res.ok) {
-    toastError(data?.error || "API request failed");
-    throw new Error(data?.error || "API request failed");
+    const msg = data?.error || data?.message || "API request failed";
+    toastError(msg);
+    throw new Error(msg);
   }
 
   if (["POST", "PUT", "DELETE"].includes(method) && refreshUserFn) {
