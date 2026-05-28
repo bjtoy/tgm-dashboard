@@ -4,24 +4,42 @@ import { useRoles } from "../context/RoleContext.jsx";
 
 export default function AuthCallback() {
   const navigate = useNavigate();
-  const { refreshUser } = useRoles();
+
+  const {
+    refreshUser,
+    setGuildId,
+  } = useRoles();
 
   useEffect(() => {
     let isMounted = true;
 
     async function finishLogin() {
       try {
+        // Clear previous guild selection
+        localStorage.removeItem("guildId");
+        setGuildId(null);
+
+        // Refresh authenticated user
         await refreshUser();
 
         if (!isMounted) return;
 
-        navigate("/", { replace: true });
+        // ALWAYS go to guild selector
+        navigate("/select-guild", {
+          replace: true,
+        });
+
       } catch (error) {
-        console.error("Login finalisation failed:", error);
+        console.error(
+          "Login finalisation failed:",
+          error
+        );
 
         if (!isMounted) return;
 
-        navigate("/login", { replace: true });
+        navigate("/login", {
+          replace: true,
+        });
       }
     }
 
@@ -30,7 +48,7 @@ export default function AuthCallback() {
     return () => {
       isMounted = false;
     };
-  }, [navigate, refreshUser]);
+  }, [navigate, refreshUser, setGuildId]);
 
   return (
     <div

@@ -1,8 +1,3 @@
-// =======================================
-// FRONTEND API WRAPPER (FINAL MERGED VERSION)
-// Works with Render backend + Vercel frontend
-// =======================================
-
 import { toastError } from "../utils/toastHelper.js";
 
 let logoutFn = null;
@@ -15,22 +10,32 @@ export function registerAuthHandlers({ logout, refreshUser }) {
 }
 
 // =======================================
-// CORRECT BASE URL
-// Must point to Render backend
+// API BASE
 // =======================================
 const API_BASE = import.meta.env.VITE_API_URL;
-// Example: https://tgm-backend-v5bp.onrender.com
 
 // =======================================
 // UNIVERSAL REQUEST WRAPPER
-// Handles cookies, errors, auth, redirects
 // =======================================
 async function request(method, endpoint, body = null) {
+  // ===================================
+  // GET CURRENT GUILD ID
+  // ===================================
+  const guildId = localStorage.getItem("guildId");
+
   const options = {
     method,
     credentials: "include",
+
     headers: {
       "Content-Type": "application/json",
+
+      // ===================================
+      // SEND GUILD ID TO BACKEND
+      // ===================================
+      ...(guildId
+        ? { "x-guild-id": guildId }
+        : {}),
     },
   };
 
@@ -41,36 +46,65 @@ async function request(method, endpoint, body = null) {
   let res;
 
   try {
-    res = await fetch(`${API_BASE}${endpoint}`, options);
+    res = await fetch(
+      `${API_BASE}${endpoint}`,
+      options
+    );
   } catch (err) {
-    toastError("Network error — server unreachable");
+    toastError(
+      "Network error — server unreachable"
+    );
+
     throw err;
   }
 
+  // ===================================
+  // AUTH
+  // ===================================
   if (res.status === 401) {
     if (logoutFn) logoutFn();
     return;
   }
 
   if (res.status === 403) {
-    window.location.href = "/not-authorized";
+    window.location.href =
+      "/not-authorized";
+
     return;
   }
 
+  // ===================================
+  // PARSE RESPONSE
+  // ===================================
   let data = null;
+
   try {
     data = await res.json();
   } catch {
     data = null;
   }
 
+  // ===================================
+  // ERROR HANDLING
+  // ===================================
   if (!res.ok) {
-    const msg = data?.error || data?.message || "API request failed";
+    const msg =
+      data?.error ||
+      data?.message ||
+      "API request failed";
+
     toastError(msg);
+
     throw new Error(msg);
   }
 
-  if (["POST", "PUT", "DELETE"].includes(method) && refreshUserFn) {
+  // ===================================
+  // REFRESH USER
+  // ===================================
+  if (
+    ["POST", "PUT", "DELETE"].includes(method) &&
+    refreshUserFn
+  ) {
     refreshUserFn();
   }
 
@@ -78,45 +112,114 @@ async function request(method, endpoint, body = null) {
 }
 
 // =======================================
-// PUBLIC API WRAPPER
+// API METHODS
 // =======================================
 export const api = {
-  get: (endpoint) => request("GET", endpoint),
-  post: (endpoint, body) => request("POST", endpoint, body),
-  put: (endpoint, body) => request("PUT", endpoint, body),
-  delete: (endpoint) => request("DELETE", endpoint),
+  get: (endpoint) =>
+    request("GET", endpoint),
+
+  post: (endpoint, body) =>
+    request("POST", endpoint, body),
+
+  put: (endpoint, body) =>
+    request("PUT", endpoint, body),
+
+  delete: (endpoint) =>
+    request("DELETE", endpoint),
 
   auth: {
-    me: () => request("GET", "/api/auth/me"),
-    logout: () => request("POST", "/api/auth/logout"),
+    me: () =>
+      request("GET", "/api/auth/me"),
+
+    logout: () =>
+      request("POST", "/api/auth/logout"),
   },
 
   guilds: {
-    list: () => request("GET", "/api/guilds"),
+    list: () =>
+      request("GET", "/api/guilds"),
   },
 
   bot: {
     mod: {
-      overview: () => request("GET", "/bot/mod/overview"),
-      activeCases: () => request("GET", "/bot/mod/active-cases"),
-      warnings: (userId) => request("GET", `/bot/mod/warnings/${userId}`),
+      overview: () =>
+        request(
+          "GET",
+          "/bot/mod/overview"
+        ),
 
-      warn: (data) => request("POST", "/bot/mod/warn", data),
-      kick: (data) => request("POST", "/bot/mod/kick", data),
-      ban: (data) => request("POST", "/bot/mod/ban", data),
+      activeCases: () =>
+        request(
+          "GET",
+          "/bot/mod/active-cases"
+        ),
+
+      warnings: (userId) =>
+        request(
+          "GET",
+          `/bot/mod/warnings/${userId}`
+        ),
+
+      warn: (data) =>
+        request(
+          "POST",
+          "/bot/mod/warn",
+          data
+        ),
+
+      kick: (data) =>
+        request(
+          "POST",
+          "/bot/mod/kick",
+          data
+        ),
+
+      ban: (data) =>
+        request(
+          "POST",
+          "/bot/mod/ban",
+          data
+        ),
     },
 
     admin: {
-      status: () => request("GET", "/bot/admin/status"),
-      guildInfo: () => request("GET", "/bot/admin/guild-info"),
+      status: () =>
+        request(
+          "GET",
+          "/bot/admin/status"
+        ),
 
-      reloadConfig: () => request("POST", "/bot/admin/reload-config"),
-      syncRoles: () => request("POST", "/bot/admin/sync-roles"),
+      guildInfo: () =>
+        request(
+          "GET",
+          "/bot/admin/guild-info"
+        ),
+
+      reloadConfig: () =>
+        request(
+          "POST",
+          "/bot/admin/reload-config"
+        ),
+
+      syncRoles: () =>
+        request(
+          "POST",
+          "/bot/admin/sync-roles"
+        ),
     },
 
     logs: {
-      recent: () => request("GET", "/bot/logs/recent"),
-      cases: () => request("GET", "/bot/logs/cases"),
+      recent: () =>
+        request(
+          "GET",
+          "/bot/logs/recent"
+        ),
+
+      cases: () =>
+        request(
+          "GET",
+          "/bot/logs/cases"
+        ),
     },
   },
 };
