@@ -9,9 +9,6 @@ function SelectGuild() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  /**
-   * Fetch guilds on mount
-   */
   useEffect(() => {
     const fetchGuilds = async () => {
       try {
@@ -23,7 +20,7 @@ function SelectGuild() {
           return;
         }
 
-        setGuilds(data.guilds || []);
+        setGuilds(Array.isArray(data.guilds) ? data.guilds : []);
         setLoading(false);
       } catch (err) {
         console.error("Guild fetch error:", err);
@@ -35,10 +32,8 @@ function SelectGuild() {
     fetchGuilds();
   }, []);
 
-  /**
-   * Handle guild selection
-   */
   const selectGuild = (guildId) => {
+    if (!guildId) return;
     localStorage.setItem("guildId", guildId);
     navigate("/");
   };
@@ -59,7 +54,7 @@ function SelectGuild() {
     );
   }
 
-  if (guilds.length === 0) {
+  if (!guilds || guilds.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center h-screen text-white">
         <h1 className="text-2xl font-bold mb-4">No Manageable Servers Found</h1>
@@ -77,32 +72,38 @@ function SelectGuild() {
       </h1>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
-        {guilds.map((guild) => (
-          <div
-            key={guild.id}
-            onClick={() => selectGuild(guild.id)}
-            className="cursor-pointer bg-[#1a1a1a] p-6 rounded-xl border border-[#333] hover:border-[#5865F2] hover:bg-[#111] transition"
-          >
-            <div className="flex items-center gap-4">
-              {guild.icon ? (
-                <img
-                  src={`https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png?size=128`}
-                  alt={guild.name}
-                  className="w-16 h-16 rounded-full"
-                />
-              ) : (
-                <div className="w-16 h-16 rounded-full bg-[#333] flex items-center justify-center text-xl">
-                  {guild.name?.charAt(0) || "?"}
-                </div>
-              )}
+        {guilds.map((guild, index) => {
+          const safeId = guild?.id || `guild-${index}`;
+          const safeName = guild?.name || "Unknown Server";
+          const safeIcon = guild?.icon;
 
-              <div>
-                <h2 className="text-xl font-semibold">{guild.name}</h2>
-                <p className="text-gray-400 text-sm">Click to manage</p>
+          return (
+            <div
+              key={safeId}
+              onClick={() => selectGuild(guild?.id)}
+              className="cursor-pointer bg-[#1a1a1a] p-6 rounded-xl border border-[#333] hover:border-[#5865F2] hover:bg-[#111] transition"
+            >
+              <div className="flex items-center gap-4">
+                {safeIcon ? (
+                  <img
+                    src={`https://cdn.discordapp.com/icons/${guild.id}/${safeIcon}.png?size=128`}
+                    alt={safeName}
+                    className="w-16 h-16 rounded-full"
+                  />
+                ) : (
+                  <div className="w-16 h-16 rounded-full bg-[#333] flex items-center justify-center text-xl">
+                    {safeName.charAt(0)}
+                  </div>
+                )}
+
+                <div>
+                  <h2 className="text-xl font-semibold">{safeName}</h2>
+                  <p className="text-gray-400 text-sm">Click to manage</p>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
