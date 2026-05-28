@@ -4,37 +4,42 @@
 
 /* Goldrops (Heading Font) */
 @font-face {
-  font-family: 'Goldrops';
-  src: url('./fonts/GoldropspersonaluseRegular.otf') format('opentype');
+  font-family: "Goldrops";
+  src: url("./fonts/GoldropspersonaluseRegular.otf")
+    format("opentype");
   font-weight: normal;
   font-style: normal;
 }
 
 /* Caudex (UI Font Family) */
 @font-face {
-  font-family: 'Caudex';
-  src: url('./fonts/Caudex-Regular.ttf') format('truetype');
+  font-family: "Caudex";
+  src: url("./fonts/Caudex-Regular.ttf")
+    format("truetype");
   font-weight: 400;
   font-style: normal;
 }
 
 @font-face {
-  font-family: 'Caudex';
-  src: url('./fonts/Caudex-Italic.ttf') format('truetype');
+  font-family: "Caudex";
+  src: url("./fonts/Caudex-Italic.ttf")
+    format("truetype");
   font-weight: 400;
   font-style: italic;
 }
 
 @font-face {
-  font-family: 'Caudex';
-  src: url('./fonts/Caudex-Bold.ttf') format('truetype');
+  font-family: "Caudex";
+  src: url("./fonts/Caudex-Bold.ttf")
+    format("truetype");
   font-weight: 700;
   font-style: normal;
 }
 
 @font-face {
-  font-family: 'Caudex';
-  src: url('./fonts/Caudex-BoldItalic.ttf') format('truetype');
+  font-family: "Caudex";
+  src: url("./fonts/Caudex-BoldItalic.ttf")
+    format("truetype");
   font-weight: 700;
   font-style: italic;
 }
@@ -42,10 +47,15 @@
 /* =========================
    Grand Mafia Design System
 ========================= */
+
 :root {
   --bg-main: #050308;
   --bg-card: #0b0507;
   --bg-elevated: #120506;
+
+  /* FIXED */
+  --bg-dark: #0b0507;
+  --bg-darker: #070305;
 
   --red-deep: #4a0a0a;
   --red-neon: #ff2e2e;
@@ -54,11 +64,15 @@
   --text-muted: #c78a8a;
 
   --border: #3a0f12;
+
+  /* FIXED */
+  --accent: #ff2e2e;
 }
 
 /* =========================
    Global Reset
 ========================= */
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -69,11 +83,12 @@ html,
 body {
   background-color: var(--bg-main);
   color: var(--text-main);
-  font-family: 'Caudex', serif;
+  font-family: "Caudex", serif;
   min-height: 100vh;
 }
 
 /* FIXED: Removed layout-breaking flex */
+
 body {
   display: block;
 }
@@ -81,13 +96,15 @@ body {
 /* =========================
    Layout Shell
 ========================= */
+
 #root {
   width: 100%;
 }
 
 /* Main app layout: sidebar + content */
+
 .app-container {
-  margin-left: 260px; /* synced with sidebar */
+  margin-left: 260px;
   padding: 32px;
   max-width: calc(1200px - 260px);
 }
@@ -95,13 +112,20 @@ body {
 /* =========================
    Header
 ========================= */
+
 .header {
   position: relative;
   padding: 24px 32px;
   border-bottom: 1px solid var(--border);
-  background: radial-gradient(circle at top, #1a0507 0, #050308 55%);
+  background:
+    radial-gradient(
+      circle at top,
+      #1a0507 0,
+      #050308 55%
+    );
+
   min-height: 200px;
-  overflow: hidden; /* FIXED mascot overlap */
+  overflow: hidden;
 }
 
 .header-left {
@@ -111,20 +135,22 @@ body {
 }
 
 .header-title {
-  font-family: 'Goldrops', serif;
+  font-family: "Goldrops", serif;
   font-size: 60px;
   letter-spacing: 2px;
   color: var(--red-neon);
+
   text-shadow:
     0 0 12px rgba(255, 46, 46, 1),
     0 0 30px rgba(255, 46, 46, 0.6);
 }
 
 .header-subtitle {
-  font-family: 'Goldrops', serif;
+  font-family: "Goldrops", serif;
   font-size: 38px;
   letter-spacing: 1px;
   color: var(--red-neon);
+
   text-shadow:
     0 0 10px rgba(255, 46, 46, 0.9),
     0 0 25px rgba(255, 46, 46, 0.5);
@@ -137,7 +163,7 @@ body {
 }
 
 /* =========================
-   Header Mascot (Hero Style)
+   Header Mascot
 ========================= */
 
 .header-art {
@@ -146,9 +172,11 @@ body {
   top: 20px;
   height: 180px;
   width: auto;
+
   display: flex;
   align-items: center;
   justify-content: center;
+
   pointer-events: none;
 }
 
@@ -156,18 +184,34 @@ body {
   height: 100%;
   width: auto;
   object-fit: contain;
-  filter: drop-shadow(0 0 12px rgba(255, 46, 46, 0.8))
-          drop-shadow(0 0 22px rgba(255, 46, 46, 0.5));
-  transition: transform 0.25s ease, filter 0.25s ease;
+
+  filter:
+    drop-shadow(
+      0 0 12px rgba(255, 46, 46, 0.8)
+    )
+    drop-shadow(
+      0 0 22px rgba(255, 46, 46, 0.5)
+    );
+
+  transition:
+    transform 0.25s ease,
+    filter 0.25s ease;
 }
 
 .mascot-img:hover {
   transform: scale(1.05);
-  filter: drop-shadow(0 0 18px rgba(255, 46, 46, 1))
-          drop-shadow(0 0 30px rgba(255, 46, 46, 0.7));
+
+  filter:
+    drop-shadow(
+      0 0 18px rgba(255, 46, 46, 1)
+    )
+    drop-shadow(
+      0 0 30px rgba(255, 46, 46, 0.7)
+    );
 }
 
 /* Responsive mascot scaling */
+
 @media (max-width: 1100px) {
   .header-art {
     height: 150px;
@@ -198,27 +242,43 @@ body {
 /* =========================
    Sidebar Navigation
 ========================= */
+
 .sidebar {
   position: fixed;
   top: 0;
   left: 0;
-  width: 260px; /* FIXED: matched app-container */
+
+  width: 260px;
   height: 100vh;
+
   padding: 24px 18px;
-  background: radial-gradient(circle at top left, #1a0507 0, #050308 55%);
-  border-right: 1px solid var(--border);
+
+  background:
+    radial-gradient(
+      circle at top left,
+      #1a0507 0,
+      #050308 55%
+    );
+
+  border-right:
+    1px solid var(--border);
+
   display: flex;
   flex-direction: column;
   gap: 8px;
+
   z-index: 10;
 }
 
 .sidebar-section-label {
   margin-top: 18px;
   margin-bottom: 4px;
+
   font-size: 11px;
+
   text-transform: uppercase;
   letter-spacing: 1px;
+
   color: var(--text-muted);
   opacity: 0.8;
 }
@@ -226,25 +286,37 @@ body {
 .nav-item {
   color: var(--text-muted);
   text-decoration: none;
+
   padding: 8px 14px;
+
   border-radius: 10px;
+
   font-weight: 500;
   font-size: 14px;
+
   transition: all 0.2s ease;
+
   border: 1px solid transparent;
 }
 
 .nav-item:hover {
   background: var(--bg-elevated);
+
   color: var(--text-main);
+
   border-color: var(--red-deep);
-  box-shadow: 0 0 8px rgba(255, 46, 46, 0.25);
+
+  box-shadow:
+    0 0 8px rgba(255, 46, 46, 0.25);
 }
 
 .nav-item.active {
   background: #1a0507;
+
   color: #ffffff;
+
   border-color: var(--red-neon);
+
   box-shadow:
     0 0 10px rgba(255, 46, 46, 0.5),
     0 0 20px rgba(255, 46, 46, 0.3);
@@ -253,6 +325,7 @@ body {
 /* =========================
    Logout Button
 ========================= */
+
 .logout-btn {
   margin-top: auto;
   margin-bottom: 10px;
@@ -261,22 +334,38 @@ body {
 /* =========================
    Cards & Panels
 ========================= */
+
 .card {
-  background: linear-gradient(180deg, var(--bg-card), #050308);
-  border: 1px solid var(--border);
+  background:
+    linear-gradient(
+      180deg,
+      var(--bg-card),
+      #050308
+    );
+
+  border:
+    1px solid var(--border);
+
   border-radius: 16px;
+
   padding: 20px;
+
   margin-bottom: 20px;
 }
 
 /* =========================
    Dashboard Grid
 ========================= */
+
 .dashboard-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+
+  grid-template-columns:
+    repeat(auto-fit, minmax(220px, 1fr));
+
   gap: 20px;
-  align-items: stretch; /* FIXED collapsing */
+
+  align-items: stretch;
 }
 
 .card h3 {
@@ -293,16 +382,25 @@ body {
 /* =========================
    Inputs
 ========================= */
+
 input,
 textarea,
 select {
   width: 100%;
+
   background-color: var(--bg-main);
+
   color: var(--text-main);
-  border: 1px solid var(--border);
+
+  border:
+    1px solid var(--border);
+
   padding: 10px 12px;
+
   border-radius: 10px;
+
   font-size: 14px;
+
   margin-bottom: 14px;
 }
 
@@ -315,34 +413,51 @@ input:focus,
 textarea:focus,
 select:focus {
   outline: none;
+
   border-color: var(--red-neon);
-  box-shadow: 0 0 0 2px rgba(255, 46, 46, 0.3);
+
+  box-shadow:
+    0 0 0 2px
+    rgba(255, 46, 46, 0.3);
 }
 
 /* =========================
    Buttons
 ========================= */
+
 button {
-  all: unset;
-  display: inline-block;
   cursor: pointer;
+  border: none;
+  background: none;
+  font-family: inherit;
 }
 
 .btn {
   background: #1a0507;
+
   color: #ffb3b3;
-  border: 2px solid #4a0a0a;
+
+  border:
+    2px solid #4a0a0a;
+
   padding: 10px 18px;
+
   border-radius: 10px;
+
   font-weight: 600;
   font-size: 14px;
+
   transition: all 0.25s ease;
-  box-shadow: 0 0 6px rgba(255, 0, 0, 0.15);
+
+  box-shadow:
+    0 0 6px rgba(255, 0, 0, 0.15);
 }
 
 .btn:hover {
   border-color: #ff2e2e;
+
   color: #ffffff;
+
   box-shadow:
     0 0 10px rgba(255, 46, 46, 0.4),
     0 0 20px rgba(255, 46, 46, 0.25);
@@ -351,6 +466,7 @@ button {
 /* =========================
    Sections
 ========================= */
+
 .section {
   display: none;
 }
@@ -367,6 +483,7 @@ button {
 /* =========================
    Forms
 ========================= */
+
 form {
   max-width: 520px;
 }
@@ -374,19 +491,30 @@ form {
 /* =========================
    Loading Screen
 ========================= */
+
 .loading-screen {
   min-height: 100vh;
+
   display: flex;
   align-items: center;
   justify-content: center;
-  background: radial-gradient(circle at center, #1a0507 0, #050308 60%);
+
+  background:
+    radial-gradient(
+      circle at center,
+      #1a0507 0,
+      #050308 60%
+    );
+
   color: var(--text-main);
+
   font-size: 18px;
 }
 
 /* =========================
    Utility
 ========================= */
+
 .hidden {
   display: none;
 }
