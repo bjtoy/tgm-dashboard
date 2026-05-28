@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../api/api.js";
+import { useRoles } from "../context/RoleContext.jsx";
 
 function SelectGuild() {
   const navigate = useNavigate();
+
+  const { setGuildId } = useRoles();
 
   const [guilds, setGuilds] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -32,10 +35,20 @@ function SelectGuild() {
     fetchGuilds();
   }, []);
 
+  // =========================================
+  // SELECT GUILD
+  // =========================================
   const selectGuild = (guildId) => {
     if (!guildId) return;
+
+    // Update React state immediately
+    setGuildId(guildId);
+
+    // Persist to localStorage
     localStorage.setItem("guildId", guildId);
-    navigate("/");
+
+    // Navigate to dashboard
+    navigate("/", { replace: true });
   };
 
   if (loading) {
@@ -57,7 +70,10 @@ function SelectGuild() {
   if (!guilds || guilds.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center h-screen text-white">
-        <h1 className="text-2xl font-bold mb-4">No Manageable Servers Found</h1>
+        <h1 className="text-2xl font-bold mb-4">
+          No Manageable Servers Found
+        </h1>
+
         <p className="text-gray-400">
           You must have <strong>Manage Server</strong> permissions and the bot must be in the server.
         </p>
@@ -97,8 +113,13 @@ function SelectGuild() {
                 )}
 
                 <div>
-                  <h2 className="text-xl font-semibold">{safeName}</h2>
-                  <p className="text-gray-400 text-sm">Click to manage</p>
+                  <h2 className="text-xl font-semibold">
+                    {safeName}
+                  </h2>
+
+                  <p className="text-gray-400 text-sm">
+                    Click to manage
+                  </p>
                 </div>
               </div>
             </div>
