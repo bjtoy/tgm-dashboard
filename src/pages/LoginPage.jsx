@@ -6,7 +6,7 @@ export default function LoginPage() {
   function handleLogin() {
     // Redirect to backend Discord OAuth route
     window.location.href =
-      `${import.meta.env.VITE_API_URL}/api/auth/login`;
+      `${import.meta.env.VITE_API_URL}/api/auth/discord`;
   }
 
   return (
