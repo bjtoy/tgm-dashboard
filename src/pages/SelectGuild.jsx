@@ -92,7 +92,7 @@ function SelectGuild() {
                 />
               ) : (
                 <div className="w-16 h-16 rounded-full bg-[#333] flex items-center justify-center text-xl">
-                  {guild.name.charAt(0)}
+                  {guild.name?.charAt(0) || "?"}
                 </div>
               )}
 
