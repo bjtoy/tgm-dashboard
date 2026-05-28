@@ -1,14 +1,20 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
 import App from "./App.jsx";
+
+/* GLOBAL UNDERBOSSHQ STYLES */
+import "./styles/styles.css";
+
+/* CONTEXT PROVIDERS */
 import { RoleProvider } from "./context/RoleContext.jsx";
 import { ToastProvider } from "./context/ToastContext.jsx";
-import "./styles.css";
 
-ReactDOM.createRoot(document.getElementById("root")).render(
-  <ToastProvider>
-    <RoleProvider>
-      <App />
-    </RoleProvider>
-  </ToastProvider>
+createRoot(document.getElementById("root")).render(
+  <StrictMode>
+    <ToastProvider>
+      <RoleProvider>
+        <App />
+      </RoleProvider>
+    </ToastProvider>
+  </StrictMode>
 );

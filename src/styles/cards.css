@@ -1,0 +1,112 @@
+/* ============================================
+   UNDERBOSSHQ — GLOBAL CARD STYLING SYSTEM
+   ============================================ */
+
+/* Base Card */
+.card {
+    background: var(--surface-2);
+    border: 1px solid var(--border-soft);
+    border-radius: 10px;
+    padding: 20px;
+    color: var(--text-bright);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.35);
+    transition: 0.25s ease;
+}
+
+/* Hover — Gold border + Red glow */
+.card:hover {
+    border-color: var(--accent-gold);
+    box-shadow: 0 0 14px rgba(255, 58, 58, 0.45);
+    transform: translateY(-3px);
+}
+
+/* Card Title */
+.card h3,
+.card-title {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: var(--brand-red);
+    text-shadow: 0 0 10px rgba(255, 58, 58, 0.45);
+}
+
+/* Stat Value */
+.card .value {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--accent-gold);
+    text-shadow: 0 0 8px rgba(212, 175, 55, 0.35);
+}
+
+/* Section Title (Used in MemberHome) */
+.section-title {
+    font-size: 26px;
+    font-weight: 800;
+    margin-bottom: 20px;
+    color: var(--brand-red);
+    text-shadow: 0 0 12px rgba(255, 58, 58, 0.55);
+}
+
+/* Error Card */
+.error-card {
+    background: rgba(138, 0, 21, 0.15);
+    border: 1px solid var(--danger);
+    border-radius: 10px;
+    padding: 20px;
+    color: var(--text-bright);
+    box-shadow: 0 0 12px rgba(255, 58, 58, 0.35);
+}
+
+.error-card h3 {
+    color: var(--danger);
+    text-shadow: 0 0 10px rgba(255, 58, 58, 0.45);
+}
+
+/* Info Card */
+.info-card {
+    background: var(--surface-1);
+    border: 1px solid var(--accent-gold);
+    border-radius: 10px;
+    padding: 20px;
+    color: var(--text-bright);
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.25);
+}
+
+.info-card h3 {
+    color: var(--accent-gold);
+    text-shadow: 0 0 10px rgba(212, 175, 55, 0.35);
+}
+
+/* Card Grid Layouts */
+.card-grid {
+    display: grid;
+    gap: 20px;
+}
+
+.card-grid-3 {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.card-grid-2 {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.card-grid-4 {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .card-grid-3,
+    .card-grid-4 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .card-grid-3,
+    .card-grid-4,
+    .card-grid-2 {
+        grid-template-columns: 1fr;
+    }
+}

@@ -1,47 +1,26 @@
 import { useEffect, useState } from "react";
-import { api } from "../api/api.js";
+import { api } from "../utils/api.js";
 import { useRoles } from "../context/RoleContext.jsx";
 import Loader from "../components/Loader.jsx";
 import ErrorCard from "../components/ErrorCard.jsx";
 
 export default function MemberHome() {
-  const { user, guildId } = useRoles();
+  const { user } = useRoles();
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Load member profile from backend (guild-aware)
   useEffect(() => {
-    if (!guildId) return;
-
-    setLoading(true);
-    setError(null);
-
     api
       .get("/member/profile")
-      .then((data) => {
-        if (!data || data.error) {
-          setError(data?.error || "Failed to load profile");
-          return;
-        }
-        setProfile(data);
-      })
+      .then((data) => setProfile(data))
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
-  }, [guildId]);
+  }, []);
 
   return (
     <div>
-      <h1
-        className="header-title"
-        style={{
-          marginBottom: "20px",
-          fontSize: "38px",
-          textShadow: "0 0 10px rgba(255, 46, 46, 0.6)",
-        }}
-      >
-        Member Dashboard
-      </h1>
+      <h1 className="section-title">Member Dashboard</h1>
 
       {loading && <Loader />}
       {error && <ErrorCard message={error} />}
@@ -49,39 +28,19 @@ export default function MemberHome() {
       {!loading && !error && (
         <>
           {/* PROFILE CARD */}
-          <div
-            className="card"
-            style={{
-              marginBottom: "30px",
-              padding: "24px",
-            }}
-          >
-            <h2
-              style={{
-                marginBottom: "10px",
-                fontSize: "26px",
-                color: "var(--red-neon)",
-                textShadow: "0 0 8px rgba(255, 46, 46, 0.6)",
-              }}
-            >
-              Welcome
-            </h2>
+          <div className="card" style={{ marginBottom: "30px" }}>
+            <h3>Welcome</h3>
 
             <p style={{ fontSize: "20px", marginBottom: "6px" }}>
               {profile?.username || user?.username}
             </p>
 
-            <p style={{ color: "var(--text-muted)" }}>
-              Faction: {profile?.faction || "Unknown"}
-            </p>
-
-            <p style={{ color: "var(--text-muted)" }}>
-              Rank: {profile?.rank || "Unknown"}
-            </p>
+            <p className="muted">Faction: {profile?.faction || "Unknown"}</p>
+            <p className="muted">Rank: {profile?.rank || "Unknown"}</p>
           </div>
 
           {/* STATS GRID */}
-          <div className="dashboard-grid">
+          <div className="card-grid card-grid-3">
             <div className="card">
               <h3>Daily Tasks</h3>
               <div className="value">{profile?.dailyTasks ?? "—"}</div>

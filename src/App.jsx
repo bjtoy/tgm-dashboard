@@ -1,37 +1,47 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import ProtectedRoute from "./components/ProtectedRoute.jsx";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 
-import DashboardLayout from "./layouts/DashboardLayout.jsx";
-
-// Pages
+/* AUTH FLOW */
 import LoginPage from "./pages/LoginPage.jsx";
-import NotAuthorized from "./pages/NotAuthorized.jsx";
-import MemberHome from "./pages/MemberHome.jsx";
-import ModDashboard from "./pages/ModDashboard.jsx";
-import AdminDashboard from "./pages/AdminDashboard.jsx";
 import AuthCallback from "./pages/AuthCallback.jsx";
 import SelectGuild from "./pages/SelectGuild.jsx";
 
-function App() {
+/* DASHBOARDS */
+import MemberHome from "./pages/MemberHome.jsx";
+import ModDashboard from "./pages/ModDashboard.jsx";
+import AdminDashboard from "./pages/AdminDashboard.jsx";
+
+/* ACCESS CONTROL */
+import NotAuthorized from "./pages/NotAuthorized.jsx";
+
+/* LAYOUT */
+import DashboardLayout from "./layouts/DashboardLayout.jsx";
+
+/* CONTEXT */
+import { useRoles } from "./context/RoleContext.jsx";
+
+/* ROLE-BASED ROUTE WRAPPER */
+function ProtectedRoute({ children, roles }) {
+  const { user, loading } = useRoles();
+
+  if (loading) return null;
+
+  if (!user) return <Navigate to="/login" replace />;
+
+  if (roles && !roles.includes(user.role)) {
+    return <Navigate to="/not-authorized" replace />;
+  }
+
+  return children;
+}
+
+export default function App() {
   return (
-    <BrowserRouter>
+    <Router>
       <Routes>
 
-        {/* Discord OAuth Callback Routes */}
-        <Route path="/auth/callback" element={<AuthCallback />} />
-        <Route path="/auth/discord/callback" element={<AuthCallback />} />
-
-        {/* Public Login Route */}
+        {/* LOGIN FLOW */}
         <Route path="/login" element={<LoginPage />} />
-
-        {/* Not Authorized */}
-        <Route path="/not-authorized" element={<NotAuthorized />} />
-
-        {/* ================================
-            PROTECTED ROUTES
-        ================================= */}
-
-        {/* Select Guild Page */}
+        <Route path="/auth/callback" element={<AuthCallback />} />
         <Route
           path="/select-guild"
           element={
@@ -41,11 +51,11 @@ function App() {
           }
         />
 
-        {/* Member Home */}
+        {/* MEMBER DASHBOARD */}
         <Route
-          path="/"
+          path="/member"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute roles={["member", "moderator", "admin"]}>
               <DashboardLayout>
                 <MemberHome />
               </DashboardLayout>
@@ -53,11 +63,11 @@ function App() {
           }
         />
 
-        {/* Moderator Dashboard */}
+        {/* MODERATOR DASHBOARD */}
         <Route
           path="/moderator"
           element={
-            <ProtectedRoute roles={["Admin", "Mod"]}>
+            <ProtectedRoute roles={["moderator", "admin"]}>
               <DashboardLayout>
                 <ModDashboard />
               </DashboardLayout>
@@ -65,11 +75,11 @@ function App() {
           }
         />
 
-        {/* Admin Dashboard */}
+        {/* ADMIN DASHBOARD */}
         <Route
           path="/admin"
           element={
-            <ProtectedRoute roles={["Admin"]}>
+            <ProtectedRoute roles={["admin"]}>
               <DashboardLayout>
                 <AdminDashboard />
               </DashboardLayout>
@@ -77,9 +87,13 @@ function App() {
           }
         />
 
+        {/* ACCESS DENIED */}
+        <Route path="/not-authorized" element={<NotAuthorized />} />
+
+        {/* DEFAULT → LOGIN */}
+        <Route path="*" element={<Navigate to="/login" replace />} />
+
       </Routes>
-    </BrowserRouter>
+    </Router>
   );
 }
-
-export default App;
