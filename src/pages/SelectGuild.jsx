@@ -20,16 +20,20 @@ export default function SelectGuild() {
 
   const {
     setGuildId,
+    roles,
   } = useRoles();
 
   // =========================
   // STATE
   // =========================
-  const [guilds, setGuilds] = useState([]);
+  const [guilds, setGuilds] =
+    useState([]);
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] =
+    useState(true);
 
-  const [error, setError] = useState(null);
+  const [error, setError] =
+    useState(null);
 
   const mountedRef = useRef(true);
 
@@ -105,7 +109,32 @@ export default function SelectGuild() {
 
     setGuildId(guild.id);
 
-    navigate("/", {
+    /**
+     * DIRECT DASHBOARD ROUTING
+     * Avoid unstable "/" redirects
+     */
+
+    if (roles.includes("Admin")) {
+
+      navigate("/admin", {
+        replace: true,
+      });
+
+      return;
+    }
+
+    if (
+      roles.includes("Moderator")
+    ) {
+
+      navigate("/moderator", {
+        replace: true,
+      });
+
+      return;
+    }
+
+    navigate("/member", {
       replace: true,
     });
   }
@@ -211,7 +240,9 @@ export default function SelectGuild() {
             <div
               key={guild.id}
               className="card"
-              onClick={() => selectGuild(guild)}
+              onClick={() =>
+                selectGuild(guild)
+              }
               style={{
                 cursor: "pointer",
                 transition:
