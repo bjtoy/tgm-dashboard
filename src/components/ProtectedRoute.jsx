@@ -16,7 +16,7 @@ export default function ProtectedRoute({
 
   const location = useLocation();
 
-  // Loading user session
+  // Wait for auth loading
   if (loading) {
     return (
       <div className="loading-screen">
@@ -30,12 +30,11 @@ export default function ProtectedRoute({
     return <Navigate to="/login" replace />;
   }
 
-  // Allow select guild page WITHOUT guild selected
-  const isGuildSelectionPage =
-    location.pathname === "/select-guild";
-
-  // Require guild everywhere else
-  if (!guildId && !isGuildSelectionPage) {
+  // Allow select guild page without guild selected
+  if (
+    location.pathname !== "/select-guild" &&
+    !guildId
+  ) {
     return <Navigate to="/select-guild" replace />;
   }
 
