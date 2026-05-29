@@ -12,164 +12,170 @@ const RoleContext = createContext();
 const API_URL = import.meta.env.VITE_API_URL;
 
 export function RoleProvider({ children }) {
-  const [user, setUser] = useState(null);
+
+  // =========================
+  // AUTH STATE
+  // =========================
+  const [user, setUser] = useState(undefined);
+
   const [roles, setRoles] = useState([]);
   const [permissions, setPermissions] = useState([]);
+
   const [loading, setLoading] = useState(true);
 
+  // =========================
+  // GUILD STATE
+  // =========================
   const [guildId, setGuildId] = useState(() => {
-    try {
-      return localStorage.getItem("guildId") || null;
-    } catch {
-      return null;
-    }
+    return localStorage.getItem("guildId") || null;
   });
 
-  // ================================
-  // KEEP STORAGE IN SYNC
-  // ================================
-  useEffect(() => {
-    try {
-      if (guildId) {
-        localStorage.setItem("guildId", guildId);
-      } else {
-        localStorage.removeItem("guildId");
-      }
-    } catch {
-      console.error("Failed to sync guildId");
-    }
-  }, [guildId]);
-
-  // ================================
-  // LOAD USER SESSION
-  // ================================
-  // ================================
+  // =========================
+  // LOAD USER
+  // =========================
   async function loadUser() {
-    try {
-      const res = await fetch(`${API_URL}/api/auth/me`, {
-        method: "GET",
-        credentials: "include",
-      });
 
-      if (res.status === 401) {
+    try {
+
+      const response = await fetch(
+        `${API_URL}/api/auth/me`,
+        {
+          credentials: "include",
+        }
+      );
+
+      // NOT LOGGED IN
+      if (response.status === 401) {
+
         setUser(null);
         setRoles([]);
         setPermissions([]);
-        setLoading(false);
+
         return;
       }
 
-      if (!res.ok) {
-        throw new Error("Failed to fetch user");
-      }
+      const data = await response.json();
 
-      const data = await res.json();
-
-      setUser(data?.user || null);
+      // SUCCESS
+      setUser(data.user || null);
 
       setRoles(
-        Array.isArray(data?.roles)
+        Array.isArray(data.roles)
           ? data.roles
           : []
       );
 
       setPermissions(
-        Array.isArray(data?.permissions)
+        Array.isArray(data.permissions)
           ? data.permissions
           : []
       );
-    } catch (err) {
-      console.error("Failed to load user:", err);
+
+    } catch (error) {
+
+      console.error(
+        "Failed loading auth state:",
+        error
+      );
 
       setUser(null);
-      setRoles([]);
-      setPermissions([]);
+
     } finally {
+
       setLoading(false);
     }
   }
 
-  // ================================
+  // =========================
   // INITIAL LOAD
-  // ================================
+  // =========================
   useEffect(() => {
+
     loadUser();
+
   }, []);
 
-  // ================================
-  // REGISTER AUTH HANDLERS
-  // ================================
-  useEffect(() => {
-    registerAuthHandlers({
-      logout,
-      refreshUser: loadUser,
-    });
-  }, []);
-
-  // ================================
+  // =========================
   // HELPERS
-  // ================================
+  // =========================
   function hasRole(roleName) {
+
     return roles.includes(roleName);
   }
 
   function hasAnyRole(roleList) {
-    return (
-      Array.isArray(roleList) &&
-      roleList.some((r) => roles.includes(r))
+
+    return roleList.some(
+      (role) => roles.includes(role)
     );
   }
 
-  function hasPermission(permissionName) {
-    return permissions.includes(permissionName);
+  function hasPermission(permission) {
+
+    return permissions.includes(permission);
   }
 
-  // ================================
+  // =========================
   // LOGOUT
-  // ================================
+  // =========================
   async function logout() {
+
     try {
-      await fetch(`${API_URL}/api/auth/logout`, {
-        method: "POST",
-        credentials: "include",
-      });
-    } catch (err) {
-      console.error("Logout error:", err);
+
+      await fetch(
+        `${API_URL}/api/auth/logout`,
+        {
+          method: "POST",
+          credentials: "include",
+        }
+      );
+
+    } catch (error) {
+
+      console.error(error);
     }
 
     setUser(null);
-    setRoles([]);
-    setPermissions([]);
-    setGuildId(null);
 
-    try {
-      localStorage.removeItem("guildId");
-    } catch {}
+    localStorage.removeItem("guildId");
 
     window.location.href = "/login";
   }
 
-  const value = {
-    user,
-    roles,
-    permissions,
-    guildId,
-    setGuildId,
-    loading,
-    hasRole,
-    hasAnyRole,
-    hasPermission,
-    refreshUser: loadUser,
-    logout,
-  };
+  // =========================
+  // API REGISTRATION
+  // =========================
+  useEffect(() => {
+
+    registerAuthHandlers({
+      logout,
+      refreshUser: loadUser,
+    });
+
+  }, []);
 
   return (
-    <RoleContext.Provider value={value}>
+    <RoleContext.Provider
+      value={{
+        user,
+        roles,
+        permissions,
+        guildId,
+        setGuildId,
+        loading,
+        hasRole,
+        hasAnyRole,
+        hasPermission,
+        refreshUser: loadUser,
+        logout,
+      }}
+    >
       {children}
     </RoleContext.Provider>
   );
 }
 
 export function useRoles() {
+
   return useContext(RoleContext);
 }
