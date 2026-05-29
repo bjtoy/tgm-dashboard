@@ -1,8 +1,16 @@
-import React, { useEffect } from "react";
+import React, {
+  useEffect,
+} from "react";
 
-import { useNavigate } from "react-router-dom";
+import {
+  useNavigate,
+} from "react-router-dom";
 
-import { useRoles } from "../context/RoleContext.jsx";
+import {
+  useRoles,
+} from "../context/RoleContext.jsx";
+
+import { api } from "../api/api.js";
 
 export default function LoginPage() {
 
@@ -11,39 +19,68 @@ export default function LoginPage() {
   const {
     user,
     loading,
-    guildId,
+    setGuildId,
   } = useRoles();
 
   // =========================
-  // REDIRECT AUTHENTICATED USERS
+  // AUTO REDIRECT
   // =========================
   useEffect(() => {
 
     if (loading) return;
 
-    // NOT LOGGED IN
     if (!user) return;
 
-    // LOGGED IN BUT NO GUILD
-    if (!guildId) {
+    async function initialise() {
 
-      navigate("/select-guild", {
-        replace: true,
-      });
+      try {
 
-      return;
+        const data =
+          await api.guilds.list();
+
+        if (
+          data?.success &&
+          Array.isArray(data.guilds) &&
+          data.guilds.length > 0
+        ) {
+
+          const firstGuild =
+            data.guilds[0];
+
+          localStorage.setItem(
+            "guildId",
+            firstGuild.id
+          );
+
+          setGuildId(firstGuild.id);
+
+          navigate("/member", {
+            replace: true,
+          });
+
+          return;
+        }
+
+        console.error(
+          "No guilds available"
+        );
+
+      } catch (error) {
+
+        console.error(
+          "Guild initialisation failed:",
+          error
+        );
+      }
     }
 
-    // FULLY AUTHENTICATED
-    navigate("/", {
-      replace: true,
-    });
+    initialise();
 
   }, [
     user,
     loading,
-    guildId,
     navigate,
+    setGuildId,
   ]);
 
   // =========================
@@ -56,7 +93,7 @@ export default function LoginPage() {
   }
 
   // =========================
-  // WAIT FOR HYDRATION
+  // LOADING
   // =========================
   if (loading) {
 
@@ -100,7 +137,8 @@ export default function LoginPage() {
           color: "var(--text-muted)",
         }}
       >
-        Sign in with Discord to access your dashboard.
+        Sign in with Discord to access
+        your dashboard.
       </p>
 
       <button

@@ -1,6 +1,10 @@
-import { Navigate, useLocation } from "react-router-dom";
+import {
+  Navigate,
+} from "react-router-dom";
 
-import { useRoles } from "../context/RoleContext.jsx";
+import {
+  useRoles,
+} from "../context/RoleContext.jsx";
 
 export default function ProtectedRoute({
   roles = null,
@@ -8,30 +12,22 @@ export default function ProtectedRoute({
   children,
 }) {
 
-  const location = useLocation();
-
   const {
     user,
     loading,
-    guildId,
     hasAnyRole,
     hasPermission,
   } = useRoles();
 
   /**
-   * ROUTES THAT DO NOT REQUIRE
-   * GUILD SELECTION
+   * =========================
+   * WAIT FOR AUTH
+   * =========================
    */
-  const guildOptionalRoutes = [
-    "/select-guild",
-    "/login",
-    "/not-authorized",
-  ];
-
-  // =========================
-  // WAIT FOR AUTH HYDRATION
-  // =========================
-  if (loading) {
+  if (
+    loading ||
+    user === undefined
+  ) {
 
     return (
       <div className="loading-screen">
@@ -40,10 +36,12 @@ export default function ProtectedRoute({
     );
   }
 
-  // =========================
-  // NOT LOGGED IN
-  // =========================
-  if (!user) {
+  /**
+   * =========================
+   * NOT LOGGED IN
+   * =========================
+   */
+  if (user === null) {
 
     return (
       <Navigate
@@ -53,27 +51,11 @@ export default function ProtectedRoute({
     );
   }
 
-  // =========================
-  // REQUIRE GUILD
-  // =========================
-  const requiresGuild =
-    !guildOptionalRoutes.includes(
-      location.pathname
-    );
-
-  if (requiresGuild && !guildId) {
-
-    return (
-      <Navigate
-        to="/select-guild"
-        replace
-      />
-    );
-  }
-
-  // =========================
-  // ROLE CHECK
-  // =========================
+  /**
+   * =========================
+   * ROLE CHECK
+   * =========================
+   */
   if (
     roles &&
     !hasAnyRole(roles)
@@ -87,12 +69,16 @@ export default function ProtectedRoute({
     );
   }
 
-  // =========================
-  // PERMISSION CHECK
-  // =========================
+  /**
+   * =========================
+   * PERMISSION CHECK
+   * =========================
+   */
   if (
     permissions &&
-    !hasPermission(permissions)
+    !hasPermission(
+      permissions
+    )
   ) {
 
     return (
@@ -103,5 +89,10 @@ export default function ProtectedRoute({
     );
   }
 
+  /**
+   * =========================
+   * ALLOW ACCESS
+   * =========================
+   */
   return children;
 }
