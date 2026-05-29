@@ -30,11 +30,12 @@ export default function ProtectedRoute({
     return <Navigate to="/login" replace />;
   }
 
-  // Allow guild selector WITHOUT guildId
-  if (
-    location.pathname !== "/select-guild" &&
-    !guildId
-  ) {
+  // Allow select guild page WITHOUT guild selected
+  const isGuildSelectionPage =
+    location.pathname === "/select-guild";
+
+  // Require guild everywhere else
+  if (!guildId && !isGuildSelectionPage) {
     return <Navigate to="/select-guild" replace />;
   }
 
@@ -44,10 +45,7 @@ export default function ProtectedRoute({
   }
 
   // Permission protection
-  if (
-    permissions &&
-    !permissions.some((p) => hasPermission(p))
-  ) {
+  if (permissions && !hasPermission(permissions)) {
     return <Navigate to="/not-authorized" replace />;
   }
 
