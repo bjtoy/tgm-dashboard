@@ -7,27 +7,18 @@ import {
 } from "../context/RoleContext.jsx";
 
 export default function ProtectedRoute({
-  roles = null,
-  permissions = null,
   children,
 }) {
 
   const {
     user,
     loading,
-    hasAnyRole,
-    hasPermission,
   } = useRoles();
 
   /**
-   * =========================
    * WAIT FOR AUTH
-   * =========================
    */
-  if (
-    loading ||
-    user === undefined
-  ) {
+  if (loading) {
 
     return (
       <div className="loading-screen">
@@ -37,11 +28,9 @@ export default function ProtectedRoute({
   }
 
   /**
-   * =========================
    * NOT LOGGED IN
-   * =========================
    */
-  if (user === null) {
+  if (!user) {
 
     return (
       <Navigate
@@ -52,47 +41,7 @@ export default function ProtectedRoute({
   }
 
   /**
-   * =========================
-   * ROLE CHECK
-   * =========================
-   */
-  if (
-    roles &&
-    !hasAnyRole(roles)
-  ) {
-
-    return (
-      <Navigate
-        to="/not-authorized"
-        replace
-      />
-    );
-  }
-
-  /**
-   * =========================
-   * PERMISSION CHECK
-   * =========================
-   */
-  if (
-    permissions &&
-    !hasPermission(
-      permissions
-    )
-  ) {
-
-    return (
-      <Navigate
-        to="/not-authorized"
-        replace
-      />
-    );
-  }
-
-  /**
-   * =========================
    * ALLOW ACCESS
-   * =========================
    */
   return children;
 }

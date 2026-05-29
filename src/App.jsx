@@ -5,30 +5,34 @@ import {
   Navigate,
 } from "react-router-dom";
 
-/* AUTH */
+/**
+ * AUTH
+ */
 import LoginPage from "./pages/LoginPage.jsx";
 import AuthCallback from "./pages/AuthCallback.jsx";
-import SelectGuild from "./pages/SelectGuild.jsx";
 
-/* DASHBOARDS */
+/**
+ * DASHBOARDS
+ */
 import MemberHome from "./pages/MemberHome.jsx";
 import ModDashboard from "./pages/ModDashboard.jsx";
 import AdminDashboard from "./pages/AdminDashboard.jsx";
 
-/* ACCESS */
+/**
+ * ACCESS
+ */
 import NotAuthorized from "./pages/NotAuthorized.jsx";
 
-/* LAYOUT */
+/**
+ * LAYOUT
+ */
 import DashboardLayout from "./layouts/DashboardLayout.jsx";
 
-/* REAL PROTECTED ROUTE */
+/**
+ * PROTECTION
+ */
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 
-/**
- * =========================
- * APP
- * =========================
- */
 export default function App() {
 
   return (
@@ -36,37 +40,23 @@ export default function App() {
 
       <Routes>
 
-        {/* =========================
-            LOGIN FLOW
-        ========================== */}
+        {/* LOGIN */}
         <Route
           path="/login"
           element={<LoginPage />}
         />
 
+        {/* CALLBACK */}
         <Route
           path="/auth/callback"
           element={<AuthCallback />}
         />
 
-        <Route
-          path="/select-guild"
-          element={
-            <ProtectedRoute>
-              <SelectGuild />
-            </ProtectedRoute>
-          }
-        />
-
-        {/* =========================
-            MEMBER
-        ========================== */}
+        {/* MEMBER */}
         <Route
           path="/member"
           element={
-            <ProtectedRoute
-              roles={["Member", "Moderator", "Admin"]}
-            >
+            <ProtectedRoute>
               <DashboardLayout>
                 <MemberHome />
               </DashboardLayout>
@@ -74,15 +64,11 @@ export default function App() {
           }
         />
 
-        {/* =========================
-            MODERATOR
-        ========================== */}
+        {/* MODERATOR */}
         <Route
           path="/moderator"
           element={
-            <ProtectedRoute
-              roles={["Moderator", "Admin"]}
-            >
+            <ProtectedRoute>
               <DashboardLayout>
                 <ModDashboard />
               </DashboardLayout>
@@ -90,15 +76,11 @@ export default function App() {
           }
         />
 
-        {/* =========================
-            ADMIN
-        ========================== */}
+        {/* ADMIN */}
         <Route
           path="/admin"
           element={
-            <ProtectedRoute
-              roles={["Admin"]}
-            >
+            <ProtectedRoute>
               <DashboardLayout>
                 <AdminDashboard />
               </DashboardLayout>
@@ -106,9 +88,15 @@ export default function App() {
           }
         />
 
-        {/* =========================
-            DEFAULT AUTH ROUTE
-        ========================== */}
+        {/* ACCESS DENIED */}
+        <Route
+          path="/not-authorized"
+          element={
+            <NotAuthorized />
+          }
+        />
+
+        {/* DEFAULT */}
         <Route
           path="/"
           element={
@@ -119,17 +107,7 @@ export default function App() {
           }
         />
 
-        {/* =========================
-            ACCESS DENIED
-        ========================== */}
-        <Route
-          path="/not-authorized"
-          element={<NotAuthorized />}
-        />
-
-        {/* =========================
-            FALLBACK
-        ========================== */}
+        {/* FALLBACK */}
         <Route
           path="*"
           element={
