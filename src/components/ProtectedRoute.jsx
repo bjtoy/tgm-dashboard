@@ -9,14 +9,14 @@ export default function ProtectedRoute({
   const {
     user,
     loading,
+    guildId,
     hasAnyRole,
     hasPermission,
-    guildId,
   } = useRoles();
 
   const location = useLocation();
 
-  // Wait for auth loading
+  // Wait until auth fully loads
   if (loading) {
     return (
       <div className="loading-screen">
@@ -25,16 +25,18 @@ export default function ProtectedRoute({
     );
   }
 
-  // Not logged in
+  // Not authenticated
   if (!user) {
     return <Navigate to="/login" replace />;
   }
 
-  // Allow select guild page without guild selected
-  if (
-    location.pathname !== "/select-guild" &&
-    !guildId
-  ) {
+  // Allow guild selection page
+  if (location.pathname === "/select-guild") {
+    return children;
+  }
+
+  // Require guild everywhere else
+  if (!guildId) {
     return <Navigate to="/select-guild" replace />;
   }
 
