@@ -6,70 +6,119 @@ import {
   useRef,
 } from "react";
 
-import { registerAuthHandlers } from "../api/api.js";
+import {
+  registerAuthHandlers,
+} from "../api/api.js";
 
-const RoleContext = createContext();
+const RoleContext =
+  createContext();
 
-const API_URL = import.meta.env.VITE_API_URL;
+const API_URL =
+  import.meta.env.VITE_API_URL;
 
-export function RoleProvider({ children }) {
-
-  // =========================
-  // AUTH STATE
-  // =========================
-  const [user, setUser] = useState(null);
-
-  const [roles, setRoles] = useState([]);
-  const [permissions, setPermissions] = useState([]);
-
-  const [loading, setLoading] = useState(true);
+export function RoleProvider({
+  children,
+}) {
 
   /**
-   * Prevent duplicate auth hydration
+   * =========================
+   * AUTH STATE
+   * =========================
    */
-  const loadedRef = useRef(false);
 
   /**
-   * Prevent state updates after unmount
+   * IMPORTANT:
+   * undefined = hydrating
+   * null = not logged in
+   * object = authenticated
    */
-  const mountedRef = useRef(true);
+  const [user, setUser] =
+    useState(undefined);
 
-  // =========================
-  // GUILD STATE
-  // =========================
-  const [guildId, setGuildId] = useState(() => {
-    return localStorage.getItem("guildId") || null;
-  });
+  const [roles, setRoles] =
+    useState([]);
 
-  // =========================
-  // LOAD USER
-  // =========================
+  const [permissions,
+    setPermissions] =
+    useState([]);
+
+  const [loading,
+    setLoading] =
+    useState(true);
+
+  /**
+   * Prevent duplicate loads
+   */
+  const loadedRef =
+    useRef(false);
+
+  /**
+   * Prevent updates after unmount
+   */
+  const mountedRef =
+    useRef(true);
+
+  /**
+   * =========================
+   * GUILD STATE
+   * =========================
+   */
+  const [guildId,
+    setGuildId] =
+    useState(() => {
+
+      return (
+        localStorage.getItem(
+          "guildId"
+        ) || null
+      );
+    });
+
+  /**
+   * =========================
+   * LOAD USER
+   * =========================
+   */
   async function loadUser() {
 
     try {
 
       setLoading(true);
 
-      const response = await fetch(
-        `${API_URL}/api/auth/me`,
-        {
-          credentials: "include",
+      const response =
+        await fetch(
+          `${API_URL}/api/auth/me`,
+          {
+            credentials:
+              "include",
+          }
+        );
+
+      /**
+       * UNAUTHORISED
+       */
+      if (
+        response.status === 401
+      ) {
+
+        if (
+          !mountedRef.current
+        ) {
+          return;
         }
-      );
-
-      // UNAUTHORISED
-      if (response.status === 401) {
-
-        if (!mountedRef.current) return;
 
         setUser(null);
+
         setRoles([]);
+
         setPermissions([]);
 
         return;
       }
 
-      // INVALID RESPONSE
+      /**
+       * INVALID RESPONSE
+       */
       if (!response.ok) {
 
         throw new Error(
@@ -77,21 +126,34 @@ export function RoleProvider({ children }) {
         );
       }
 
-      const data = await response.json();
+      const data =
+        await response.json();
 
-      if (!mountedRef.current) return;
+      if (
+        !mountedRef.current
+      ) {
+        return;
+      }
 
-      // SUCCESS
-      setUser(data.user || null);
+      /**
+       * SUCCESS
+       */
+      setUser(
+        data.user || null
+      );
 
       setRoles(
-        Array.isArray(data.roles)
+        Array.isArray(
+          data.roles
+        )
           ? data.roles
           : []
       );
 
       setPermissions(
-        Array.isArray(data.permissions)
+        Array.isArray(
+          data.permissions
+        )
           ? data.permissions
           : []
       );
@@ -103,62 +165,96 @@ export function RoleProvider({ children }) {
         error
       );
 
-      if (!mountedRef.current) return;
+      if (
+        !mountedRef.current
+      ) {
+        return;
+      }
 
       setUser(null);
+
       setRoles([]);
+
       setPermissions([]);
 
     } finally {
 
-      if (!mountedRef.current) return;
+      if (
+        !mountedRef.current
+      ) {
+        return;
+      }
 
       setLoading(false);
 
-      loadedRef.current = true;
+      loadedRef.current =
+        true;
     }
   }
 
-  // =========================
-  // INITIAL LOAD
-  // =========================
+  /**
+   * =========================
+   * INITIAL LOAD
+   * =========================
+   */
   useEffect(() => {
 
-    mountedRef.current = true;
+    mountedRef.current =
+      true;
 
-    if (!loadedRef.current) {
+    if (
+      !loadedRef.current
+    ) {
+
       loadUser();
     }
 
     return () => {
-      mountedRef.current = false;
+
+      mountedRef.current =
+        false;
     };
 
   }, []);
 
-  // =========================
-  // HELPERS
-  // =========================
-  function hasRole(roleName) {
+  /**
+   * =========================
+   * HELPERS
+   * =========================
+   */
+  function hasRole(
+    roleName
+  ) {
 
-    return roles.includes(roleName);
-  }
-
-  function hasAnyRole(roleList) {
-
-    return roleList.some(
-      (role) => roles.includes(role)
+    return roles.includes(
+      roleName
     );
   }
 
-  function hasPermission(permission) {
+  function hasAnyRole(
+    roleList
+  ) {
 
-    return permissions.includes(permission);
+    return roleList.some(
+      (role) =>
+        roles.includes(role)
+    );
   }
 
-  // =========================
-  // LOGOUT
-  // =========================
+  function hasPermission(
+    permission
+  ) {
+
+    return permissions.includes(
+      permission
+    );
+  }
+
+  /**
+   * =========================
+   * LOGOUT
+   * =========================
+   */
   async function logout() {
 
     try {
@@ -167,7 +263,8 @@ export function RoleProvider({ children }) {
         `${API_URL}/api/auth/logout`,
         {
           method: "POST",
-          credentials: "include",
+          credentials:
+            "include",
         }
       );
 
@@ -180,22 +277,30 @@ export function RoleProvider({ children }) {
     }
 
     setUser(null);
+
     setRoles([]);
+
     setPermissions([]);
 
-    localStorage.removeItem("guildId");
+    localStorage.removeItem(
+      "guildId"
+    );
 
-    window.location.href = "/login";
+    window.location.href =
+      "/login";
   }
 
-  // =========================
-  // API REGISTRATION
-  // =========================
+  /**
+   * =========================
+   * REGISTER API HANDLERS
+   * =========================
+   */
   useEffect(() => {
 
     registerAuthHandlers({
       logout,
-      refreshUser: loadUser,
+      refreshUser:
+        loadUser,
     });
 
   }, []);
@@ -212,7 +317,8 @@ export function RoleProvider({ children }) {
         hasRole,
         hasAnyRole,
         hasPermission,
-        refreshUser: loadUser,
+        refreshUser:
+          loadUser,
         logout,
       }}
     >
@@ -223,5 +329,7 @@ export function RoleProvider({ children }) {
 
 export function useRoles() {
 
-  return useContext(RoleContext);
+  return useContext(
+    RoleContext
+  );
 }
