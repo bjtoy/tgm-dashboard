@@ -1,4 +1,5 @@
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
+
 import { useRoles } from "../context/RoleContext.jsx";
 
 export default function ProtectedRoute({
@@ -6,6 +7,8 @@ export default function ProtectedRoute({
   permissions = null,
   children,
 }) {
+
+  const location = useLocation();
 
   const {
     user,
@@ -15,8 +18,20 @@ export default function ProtectedRoute({
     hasPermission,
   } = useRoles();
 
+  /**
+   * ROUTES THAT DO NOT REQUIRE
+   * GUILD SELECTION
+   */
+  const guildOptionalRoutes = [
+    "/select-guild",
+    "/login",
+    "/not-authorized",
+  ];
+
+  // =========================
   // WAIT FOR AUTH HYDRATION
-  if (loading || user === undefined) {
+  // =========================
+  if (loading) {
 
     return (
       <div className="loading-screen">
@@ -25,15 +40,28 @@ export default function ProtectedRoute({
     );
   }
 
+  // =========================
   // NOT LOGGED IN
-  if (user === null) {
+  // =========================
+  if (!user) {
 
-    return <Navigate to="/login" replace />;
+    return (
+      <Navigate
+        to="/login"
+        replace
+      />
+    );
   }
 
+  // =========================
   // REQUIRE GUILD
-  if (!guildId &&
-      window.location.pathname !== "/select-guild") {
+  // =========================
+  const requiresGuild =
+    !guildOptionalRoutes.includes(
+      location.pathname
+    );
+
+  if (requiresGuild && !guildId) {
 
     return (
       <Navigate
@@ -43,8 +71,13 @@ export default function ProtectedRoute({
     );
   }
 
+  // =========================
   // ROLE CHECK
-  if (roles && !hasAnyRole(roles)) {
+  // =========================
+  if (
+    roles &&
+    !hasAnyRole(roles)
+  ) {
 
     return (
       <Navigate
@@ -54,9 +87,13 @@ export default function ProtectedRoute({
     );
   }
 
+  // =========================
   // PERMISSION CHECK
-  if (permissions &&
-      !hasPermission(permissions)) {
+  // =========================
+  if (
+    permissions &&
+    !hasPermission(permissions)
+  ) {
 
     return (
       <Navigate
