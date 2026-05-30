@@ -14,6 +14,37 @@ body {
    HEADERS
    ============================ */
 
+.header-title,
+.header-subtitle {
+    margin: 0;
+    text-transform: uppercase;
+}
+
+.header-title {
+    font-size: 48px;
+    font-weight: 900;
+    letter-spacing: 1.4px;
+    color: var(--brand-red);
+    text-shadow: 0 0 18px rgba(255, 58, 58, 0.55);
+}
+
+.header-subtitle {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--accent-gold);
+    margin-top: 14px;
+}
+
+.loading-screen {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-darkest);
+    color: var(--text-bright);
+    font-size: 18px;
+}
+
 h1, .h1 {
     font-size: 42px;
     font-weight: 800;
