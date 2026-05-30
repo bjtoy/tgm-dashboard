@@ -39,8 +39,11 @@ async function request(method, endpoint, body = null) {
     },
 
     member: {
-      profile: () =>
-        request("GET", "/api/member/profile"),
+      profile: async () => {
+        const res = await request("GET", "/api/member/profile");
+        // Normalize undefined -> empty object to avoid callers reading properties of undefined
+        return res || {};
+      },
     },
   };
 
